@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="16f5d999-a913-4223-8665-8de2e0799c8f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/api/src/routes/auth.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email_service/.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email_service/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email_service/server.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email_service/src/logger.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/email_service/src/mailer.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +40,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1582286894917</updated>
-      <workItem from="1582286896648" duration="10488000" />
+      <workItem from="1582286896648" duration="10848000" />
     </task>
     <servers />
   </component>
