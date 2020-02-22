@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+    api:
+        build:
+            context: ./api
+            dockerfile: ./Dockerfile
+        image: alx_master-api
+        container_name: alx_master_api
+        restart: unless-stopped
+        env_file: ./api/.env
+        command: /master-api/node_modules/.bin/nodemon ./api/server.js
+        ports:
+            - 5000:5000
+        volumes:
+            - ./api:/master-api
+            - node_modules:/master-api/node_modules
+    email_service:
+        build:
+            context: ./email_service
+            dockerfile: ./Dockerfile
+        image: alx_master-email-service
+        container_name: alx_email_service
+        restart: unless-stopped
+        env_file: ./email_service/.env
+        command: npm start
+        ports:
+            - 5002:5002
+        volumes:
+            - ./email_service:/email-service
+            - node_modules:/email-service/node_modules
+#    clustering_engine:
+#        build:
+#            context: ./clustering_engine
+#            dockerfile: ./Dockerfile
+#        image: alx_clustering-engine
+#        container_name: alx_clustering_engine
+#        restart: unless-stopped
+#        env_file: ./clustering_engine/.env
+#        command: /clustering-engine/node_modules/.bin/nodemon server.js
+#        ports:
+#            - 5001:5001
+#        volumes:
+#            - ./clustering_engine:/clustering-engine
+#            - node_modules:/clustering-engine/node_modules
+
+volumes:
+    node_modules:
