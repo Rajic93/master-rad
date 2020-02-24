@@ -7,8 +7,8 @@ class MoviesService extends Service {
         super('movies');
     }
 
-    hello() {
-        console.log('hello this is movie')
+    async findByUserId(id) {
+
     }
 }
 

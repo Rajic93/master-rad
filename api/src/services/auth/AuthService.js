@@ -9,11 +9,11 @@ class AuthService extends Service {
     }
 
     async authenticate(credentials) {
-        return this.strategy.authenticate(credentials);        
+        return this.strategy.authenticate(credentials);
     }
 
     async authorize(user, route) {
-        return this.strategy.authorize(user, route);    
+        return this.strategy.authorize(user, route);
     }
 }
 

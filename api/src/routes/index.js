@@ -3,11 +3,7 @@ const authRouter = require('./auth');
 
 const INDEX = '/';
 
-const services = require('../services');
-
-const defaultControler = (req, res) => {
-    const users = new services.Users();
-    users.hello()
+const defaultControler = async (req, res) => {
     res.status(200).send('Success message: Henlo hooman');
 };
 

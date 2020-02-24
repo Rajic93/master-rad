@@ -1,10 +1,10 @@
 
 const express = require('express');
+const server = express();
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const dotenv = require('dotenv');
-
-const server = express();
 dotenv.config();
 
 const mailer = require('./src/mailer');
@@ -27,7 +27,7 @@ server.use((req, res, next) => {
   }
 });
 
-server.use('/email-service', async (
+server.post('/email-service', async (
   {
     body: {
       sender,
@@ -52,3 +52,5 @@ server.use('/email-service', async (
 });
 
 server.listen(port, () => console.log(`Email server is up and running at port ${port}`));
+
+

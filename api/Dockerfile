@@ -4,15 +4,16 @@ WORKDIR /master-api
 
 RUN npm install -g nodemon
 
-COPY package*.json ./
-
-RUN npm i
-# RUN npm ci \
-#  && npm cache clean --force \
-#  && mv /master-api/node_modules /node_modules
+COPY package.json /master-api/package.json
+COPY package-lock.json /master-api/package-lock.json
 
 COPY . .
 
+# install dependencies
+RUN npm ci
+
+# expose port
 EXPOSE 5000
 
-CMD ["node", "server.js"]
+# run server
+CMD ["npm", "run", "dev"]

@@ -1,22 +1,19 @@
-
 FROM mhart/alpine-node
 
 WORKDIR /email-service
 
 RUN npm install -g nodemon
 
-COPY package*.json ./
+COPY package.json /email-service/package.json
+COPY package-lock.json /email-service/package-lock.json
 
 COPY . .
 
-RUN ls -la
-RUN cat package.json
-#RUN npm i
-# RUN npm ci \
-#  && npm cache clean --force \
-#  && mv /master-api/node_modules /node_modules
-RUN ls -la ./node_modules
+# install dependencies
+RUN npm ci
 
+# expose port
 EXPOSE 5002
 
-CMD ["npm", "start"]
+# run server
+CMD ["npm", "run", "dev"]

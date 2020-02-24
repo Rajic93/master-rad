@@ -1,9 +1,9 @@
 
 require('./auth');
 require('./books');
+require('./emails');
 require('./movies');
 require('./users');
-
 
 const ServiceRegistry = require('./ServiceRegistry');
 

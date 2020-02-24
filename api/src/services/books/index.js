@@ -7,8 +7,8 @@ class BooksService extends Service {
         super('books');
     }
 
-    hello() {
-        console.log('hello this is book')
+    async findByUserId(id) {
+
     }
 }
 

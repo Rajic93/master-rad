@@ -2,33 +2,41 @@ version: '3'
 
 services:
     api:
-        build:
-            context: ./api
-            dockerfile: ./Dockerfile
-        image: alx_master-api
+        build: ./api
+        volumes:
+            - ./api:/master-api
+            - master-api/node_modules
         container_name: alx_master_api
         restart: unless-stopped
         env_file: ./api/.env
-        command: /master-api/node_modules/.bin/nodemon ./api/server.js
         ports:
             - 5000:5000
-        volumes:
-            - ./api:/master-api
-            - node_modules:/master-api/node_modules
+        command: "nodemon server.js"
     email_service:
-        build:
-            context: ./email_service
-            dockerfile: ./Dockerfile
-        image: alx_master-email-service
+        build: ./email_service
+        volumes:
+            - ./email_service:/email-service
+            - email-service/node_modules
         container_name: alx_email_service
         restart: unless-stopped
         env_file: ./email_service/.env
-        command: npm start
         ports:
             - 5002:5002
+        command: "nodemon server.js"
+    users_db:
+        image: postgres
         volumes:
-            - ./email_service:/email-service
-            - node_modules:/email-service/node_modules
+            - ./db/postgres:/var/lib/postgresql/data
+        ports:
+            - 5003:5432
+        environment:
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=root
+            - POSTGRES_DB=masterdb
+#    cache:
+#        image: redis:latest
+#        ports:
+#            - 6379:6379
 #    clustering_engine:
 #        build:
 #            context: ./clustering_engine
@@ -42,7 +50,4 @@ services:
 #            - 5001:5001
 #        volumes:
 #            - ./clustering_engine:/clustering-engine
-#            - node_modules:/clustering-engine/node_modules
-
-volumes:
-    node_modules:
+#            - clustering-engine/node_modules

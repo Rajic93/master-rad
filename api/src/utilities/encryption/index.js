@@ -1,5 +1,5 @@
 
-const encrypt = (data, salt) => data + salt;
+const encrypt = (data, salt) => data;
 
 const decrypt = data => data;
 

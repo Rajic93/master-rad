@@ -7,8 +7,9 @@ class LocalAuth {
         this.usersService = usersService;
     }
 
-    authenticate({ username, password }) {
-        const user = this.usersService.findByUsername(username);
+    async authenticate({ username, password }) {
+        const user = await this.usersService.findByUsername(username);
+
         if (!user) {
             throw new Error('Username or password not valid');
         }
