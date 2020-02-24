@@ -1,6 +1,6 @@
 
 const Service = require('../Service');
-const { registerService } = require('../registry');
+const serviceRegistry = require('../ServiceRegistry');
 const { Users } = require('../../models');
 
 class UsersService extends Service {
@@ -62,6 +62,6 @@ class UsersService extends Service {
     }
 }
 
-registerService('users', UsersService, ['movies', 'books']);
+serviceRegistry.registerService('users', UsersService, ['movies', 'books']);
 
 module.exports = UsersService;

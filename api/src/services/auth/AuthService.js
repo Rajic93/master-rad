@@ -1,6 +1,6 @@
 
 const Service = require('../Service');
-const { registerService } = require('../registry');
+const serviceRegistry = require('../ServiceRegistry');
 
 class AuthService extends Service {
     constructor(Strategy) {
@@ -17,6 +17,6 @@ class AuthService extends Service {
     }
 }
 
-registerService('auth', AuthService, ['users']);
+serviceRegistry.registerService('auth', AuthService, ['users']);
 
 module.exports = AuthService;

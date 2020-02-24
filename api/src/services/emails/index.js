@@ -1,6 +1,6 @@
 
 const Service = require('../Service');
-const { registerService } = require('../registry');
+const serviceRegistry = require('../ServiceRegistry');
 const axios = require('axios');
 
 class EmailService extends Service {
@@ -13,6 +13,6 @@ class EmailService extends Service {
   }
 }
 
-registerService('emails', EmailService);
+serviceRegistry.registerService('emails', EmailService);
 
 module.exports = EmailService;

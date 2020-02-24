@@ -1,6 +1,6 @@
 
 const Service = require('../Service');
-const { registerService } = require('../registry');
+const serviceRegistry = require('../ServiceRegistry');
 
 class BooksService extends Service {
     constructor() {
@@ -12,6 +12,6 @@ class BooksService extends Service {
     }
 }
 
-registerService('books', BooksService);
+serviceRegistry.registerService('books', BooksService);
 
 module.exports = BooksService;
