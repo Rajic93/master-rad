@@ -19,15 +19,11 @@ class ServiceRegistry {
         if (this.services[serviceName]) {
             throw new Error('Service already exists!');
         }
-    
+
         this.services[serviceName] = {
             module: serviceModule,
             dependencies,
         };
-    }
-
-    getRegistry() {
-        return this.services;
     }
 
     resolveDependencies(name) {
@@ -35,7 +31,7 @@ class ServiceRegistry {
             throw new Error('Non existing module!');
         }
         const dependencies = this.services[name].dependencies;
-    
+
         return dependencies
         .reduce((acc, curr) => {
             if (!this.services[curr]) {
@@ -53,10 +49,9 @@ class ServiceRegistry {
         this.resolveDependencies(name)
             .map(({ depName, depModule: Module }) => { obj[`${depName}Service`] = new Module(); });
     }
-    
+
     resolveServices() {
         return Object.keys(this.services).reduce((acc, curr) => {
-            this.services[curr].module;
             acc[capitalize(curr)] = this.services[curr].module;
             return acc;
         }, {});
@@ -64,7 +59,7 @@ class ServiceRegistry {
 }
 
 const instance = new ServiceRegistry();
-Object.freeze(instance)
+Object.freeze(instance);
 
 module.exports = instance;
 

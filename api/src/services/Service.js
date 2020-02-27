@@ -1,9 +1,9 @@
 
-const { bindDependencies } = require('./registry');
+const ServiceRegistry = require('./ServiceRegistry');
 
 class Service {
     constructor(serviceName) {
-        bindDependencies(this, serviceName);
+        ServiceRegistry.bindDependencies(this, serviceName);
     }
 }
 
