@@ -10,22 +10,26 @@ class Movies extends Sequelize.Model {
         primaryKey: true,
       },
       title: { type: DataTypes.STRING },
-      author_id: {
-        type: DataTypes.INTEGER,
-        references: 'authors',
-        key: 'id',
-      },
       year: { type: DataTypes.INTEGER },
-      rating: { type: DataTypes.INTEGER },
-      genre_id: {
-        type: DataTypes.STRING,
-        references: 'genres',
-        key: 'id',
-      },
+      average_rating: { type: DataTypes.DECIMAL(3, 2) },
+      no_of_ratings: { type: DataTypes.INTEGER },
     }, {
       tableName: 'movies',
       sequelize,
     });
+  }
+
+  static associate({
+    Authors,
+    BooksAuthors,
+    BooksGenres,
+    BooksRatings,
+    Genres,
+    Users,
+  }) {
+    this.ratings = this.belongsToMany(Users, { through: BooksRatings });
+    this.author = this.belongsToMany(Authors, { through: BooksAuthors });
+    this.genres = this.belongsToMany(Genres, { through: BooksGenres });
   }
 }
 

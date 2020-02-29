@@ -11,6 +11,10 @@ class Auth {
             password,
         });
     }
+
+    async register(userData) {
+        
+    }
 }
 
-module.exports = new Auth();
+module.exports = new Auth;

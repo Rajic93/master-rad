@@ -52,7 +52,8 @@ class ServiceRegistry {
 
     resolveServices() {
         return Object.keys(this.services).reduce((acc, curr) => {
-            acc[capitalize(curr)] = this.services[curr].module;
+            const ServiceModule = this.services[curr].module;
+            acc[capitalize(curr)] = new ServiceModule();
             return acc;
         }, {});
     };

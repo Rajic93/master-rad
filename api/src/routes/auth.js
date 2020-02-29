@@ -1,14 +1,11 @@
 
 const express = require('express');
 const router = express.Router();
-// const { EmailsService } = require('../services');
-const AuthService = require('../services/auth');
-// console.log({ EmailsService })
-// const emailService = new EmailsService();
+const { Auth } = require('../services');
 
 router.post('/login', async ({ body: { username, password } }, res) => {
   try {
-    const signedData = await AuthService.login({ username, password });
+    const signedData = await Auth.login({ username, password });
     res.status(200).send(signedData);
   } catch (error) {
     res.status(500).send(error.toString());
@@ -17,6 +14,7 @@ router.post('/login', async ({ body: { username, password } }, res) => {
 
 router.post('/register', async (req, res) => {
   try {
+
     // await emailService.sendEmail({
     //   "sender": "aleksandar.v.rajic@gmail.com",
     //   "recipient": "rtest@mailinator.com",

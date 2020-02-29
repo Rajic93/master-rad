@@ -5,7 +5,7 @@ const serviceRegistry = require('../ServiceRegistry');
 class AuthService extends Service {
     constructor(Strategy) {
         super('auth');
-        this.strategy = new Strategy(this.usersService);
+        typeof Strategy === 'function' && (this.strategy = new Strategy(this.usersService));
     }
 
     async authenticate(credentials) {

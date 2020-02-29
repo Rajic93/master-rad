@@ -28,13 +28,14 @@ services:
     users_db:
         image: postgres
         volumes:
-            - ./db/postgres:/var/lib/postgresql/data
+            - master_psqldb:/var/lib/postgresql/data
         ports:
             - 5003:5432
         environment:
             - POSTGRES_USER=root
             - POSTGRES_PASSWORD=root
             - POSTGRES_DB=masterdb
+            # - PG_
 #    cache:
 #        image: redis:latest
 #        ports:
@@ -53,3 +54,7 @@ services:
 #        volumes:
 #            - ./clustering_engine:/clustering-engine
 #            - clustering-engine/node_modules
+
+volumes:
+    master_psqldb:
+        external: true

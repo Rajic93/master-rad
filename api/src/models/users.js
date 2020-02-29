@@ -85,6 +85,12 @@ class Users extends Sequelize.Model {
       sequelize,
     });
   }
+
+  static associate({ Books, BooksRatings }) {
+    this.books = this.belongsToMany(Books, { through: BooksRatings });
+  }
 }
 
 module.exports = Users;
+
+

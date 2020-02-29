@@ -33,11 +33,25 @@ class UsersService extends Service {
     }
 
     async findUserMovies(id) {
-        return this.moviesService.findByUserId(id);
+        const user = await Users.findOne({
+            where: { id },
+            attributes: [],
+            include: [{ models: 'movies' }],
+        });
+        return user.get('movies');
     }
 
     async findUserBooks(id) {
-        return this.booksService.findByUserId(id);
+        const user = await Users.findOne({
+            where: { id },
+            attributes: [],
+            include: [{ models: 'books' }],
+        });
+        return user.get('books');
+    }
+
+    async create(user) {
+        return Users.create(user);
     }
 
     async update({
