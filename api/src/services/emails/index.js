@@ -9,7 +9,8 @@ class EmailService extends Service {
   }
 
   async sendEmail(config) {
-    return axios.post('http://email_service:5002/email-service', config);
+    const options = { headers: { alx_master_app: 'alx_api' } };
+    return axios.post('http://email_service:5002/email-service', config, options);
   }
 }
 

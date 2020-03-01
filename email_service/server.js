@@ -35,6 +35,7 @@ server.post('/email-service', async (
       subject,
       content,
     },
+    headers: { alx_master_app },
   },
   res,
 ) => {

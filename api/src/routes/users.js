@@ -1,16 +1,15 @@
 
 const express = require('express');
 const router = express.Router();
-const { UsersService } = require('../services');
+const { Users } = require('../services');
 
-const usersService = new UsersService();
 
 router.get('/info', async (
   { user: { id } },
   res,
 ) => {
   try {
-    const info = await usersService.findById(id);
+    const info = await Users.findById(id);
     if (!info) {
       return res.status(404).send('User not found.');
     }
@@ -25,7 +24,7 @@ router.get('/movies', async (
   res,
 ) => {
   try {
-    const movies = await usersService.findUserMovies(id);
+    const movies = await Users.findUserMovies(id);
     res.status(200).send(movies);
   } catch (error) {
     res.status(500).send(error.toString());
@@ -37,7 +36,7 @@ router.get('/books', async (
   res,
 ) => {
   try {
-    const books = await usersService.findUserBooks(id);
+    const books = await Users.findUserBooks(id);
     res.status(200).send(books);
   } catch (error) {
     res.status(500).send(error.toString());
@@ -52,7 +51,7 @@ router.put('/update', async (
   res,
 ) => {
   try {
-    const updatedUser = await usersService.update({
+    const updatedUser = await Users.update({
       id,
       ...body,
     });
@@ -70,7 +69,7 @@ router.delete('/delete', async (
   res,
 ) => {
   try {
-    const deactivatedUser = await usersService.deactivate(id);
+    const deactivatedUser = await Users.deactivate(id);
     if (!deactivatedUser) {
       return res.status(404).send('User not found.');
     }

@@ -54,7 +54,7 @@ router.post('/rate', async (
         }
         
         await book.addBooksRatings(
-            BooksService.booksRatings,
+            Books.booksRatings,
             {
                 through: {
                     user_id: id,

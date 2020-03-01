@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { Auth } = require('../services');
+const { Auth, Emails } = require('../services');
 
 router.post('/login', async ({ body: { username, password } }, res) => {
   try {
@@ -15,7 +15,7 @@ router.post('/login', async ({ body: { username, password } }, res) => {
 router.post('/register', async (req, res) => {
   try {
 
-    // await emailService.sendEmail({
+    // await Emails.sendEmail({
     //   "sender": "aleksandar.v.rajic@gmail.com",
     //   "recipient": "rtest@mailinator.com",
     //   "subject": "Proba",
