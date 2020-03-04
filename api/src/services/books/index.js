@@ -1,7 +1,7 @@
 
 const Service = require('../Service');
 const serviceRegistry = require('../ServiceRegistry');
-const { Books, BooksRatings } = require('../../models');
+const { Authors, Books, BooksRatings, BooksAuthors } = require('../../models');
 
 class BooksService extends Service {
     constructor() {
@@ -27,6 +27,21 @@ class BooksService extends Service {
             limit,
             offset: page * limit,
         });
+    }
+
+    async findByAuthor(id) {
+        return Books.findAll({
+            include: [{
+                model: Authors,
+                attributes: [],
+                required: true,
+                where: { id },
+            }],
+        });
+    }
+
+    async findByGenres(genres = []) {
+        return [];
     }
 }
 

@@ -28,7 +28,7 @@ class Movies extends Sequelize.Model {
     Users,
   }) {
     this.ratings = this.belongsToMany(Users, { through: BooksRatings });
-    this.author = this.belongsToMany(Authors, { through: BooksAuthors });
+    // this.author = this.belongsToMany(Authors, { through: BooksAuthors });
     this.genres = this.belongsToMany(Genres, { through: BooksGenres });
   }
 }

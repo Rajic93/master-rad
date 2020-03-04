@@ -13,7 +13,7 @@ services:
             - 5000:5000
         command: "nodemon server.js"
         depends_on:
-          - users_db
+          - postgres_db
     email_service:
         build: ./email_service
         volumes:
@@ -25,7 +25,9 @@ services:
         ports:
             - 5002:5002
         command: "nodemon server.js"
-    users_db:
+        depends_on:
+          - postgres_db
+    postgres_db:
         image: postgres
         volumes:
             - master_psqldb:/var/lib/postgresql/data

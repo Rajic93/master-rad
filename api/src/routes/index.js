@@ -24,6 +24,6 @@ module.exports = app => {
 
     // routes
     app.use(AUTH, authRouter);
-    app.use(BOOKS, jwtMiddleware, booksRouter);
+    app.use(BOOKS, booksRouter);
     app.use(INDEX, defaultControler);
 };

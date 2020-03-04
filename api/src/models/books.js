@@ -10,6 +10,7 @@ class Books extends Sequelize.Model {
         primaryKey: true,
       },
       title: { type: DataTypes.STRING },
+      author_signature: { type: DataTypes.STRING },
       year: { type: DataTypes.INTEGER },
       average_rating: { type: DataTypes.DECIMAL(3, 2) },
       no_of_ratings: { type: DataTypes.INTEGER },
@@ -28,7 +29,13 @@ class Books extends Sequelize.Model {
     Users,
   }) {
     this.ratings = this.belongsToMany(Users, { through: BooksRatings });
-    this.author = this.belongsToMany(Authors, { through: BooksAuthors });
+    this.booksAuthors = this.belongsToMany(
+      Authors,
+      {
+        through: BooksAuthors,
+        foreignKey: 'book_id',
+      },
+    );
     this.genres = this.belongsToMany(Genres, { through: BooksGenres });
   }
 }

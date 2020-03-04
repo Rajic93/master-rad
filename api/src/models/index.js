@@ -2,7 +2,7 @@
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('masterdb', 'root', 'root', {
-  host: 'users_db',
+  host: 'postgres_db',
   dialect: 'postgres',
   pool: {
     max: 5,

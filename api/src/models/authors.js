@@ -24,7 +24,13 @@ class Authors extends Model {
     }
 
     static associate({ Books, BooksAuthors }) {
-        this.books = this.belongsToMany(Books, { through: BooksAuthors });
+        this.authorsBooks = this.belongsToMany(
+            Books,
+            {
+                foreignKey: 'author_id',
+                through: BooksAuthors,
+            },
+        );
     }
 }
 

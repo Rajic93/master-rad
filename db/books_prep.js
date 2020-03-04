@@ -15,9 +15,10 @@ readInterface.on('line', (line) => {
         authors.set(processedAuthor, uuid());
     }
     const processedTitle = title.replace(/"/g, '');
+    const processedYear = year.replace(/"/g, '');
     books.push({
         title: processedTitle,
-        year: Number.parseInt(year),
+        year: Number.parseInt(processedYear),
         author: authors.get(processedAuthor),
         isbn,
     });

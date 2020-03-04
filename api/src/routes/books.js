@@ -29,6 +29,30 @@ router.get('/', async (
     }
 });
 
+router.get('/author/:id', async (
+    { params: { id } },
+    res,
+) => {
+    try {
+        const books = await Books.findByAuthor(id);
+        res.status(200).send(books);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
+router.get('/genres', async (
+    { query: { genres } },
+    res,
+) => {
+    try {
+        const books = await Books.findByGenres(genres);
+        res.status(200).send(books);
+    } catch (error) {
+        res.status(500).send(error.toString());
+    }
+});
+
 router.get('/recommend', async ({ user: { id } }, res) => {
     try {
         
@@ -64,8 +88,8 @@ router.post('/rate', async (
             },
         );
         
-        let avgRating = book.get('average_rating');
-        const numOfRatings = book.get('no_of_ratings');
+        let avgRating = book.get('average_rating') || 0;
+        const numOfRatings = book.get('no_of_ratings') || 0;
         avgRating = (avgRating * numOfRatings + rating) / (numOfRatings + 1);
         await book.update(
             {

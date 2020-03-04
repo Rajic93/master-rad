@@ -20,4 +20,4 @@ const port = 5000;
 registerRoutes(server);
 
 
-server.listen(port, () => console.log(`Example app listening on port ${port}!!!`))
+server.listen(port, () => console.log(`API is up and running at port ${port}!!!`))
