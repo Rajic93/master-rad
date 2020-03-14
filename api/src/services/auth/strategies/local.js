@@ -7,8 +7,8 @@ class LocalAuth {
         this.usersService = usersService;
     }
 
-    async authenticate({ username, password }) {
-        const user = await this.usersService.findByUsername(username);
+    async authenticate({ username, password, email }) {
+        const user = await this.usersService.findByEmailOrUsername(email, username);
 
         if (!user) {
             throw new Error('Username or password not valid');
@@ -17,7 +17,7 @@ class LocalAuth {
         const salt = user.get('salt');
         const encrPassword = encrypt(password, salt);
 
-        if (encrPassword !== password) {
+        if (encrPassword !== user.get('password')) {
             throw new Error('Username or password not valid');
         }
 
