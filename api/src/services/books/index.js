@@ -45,6 +45,6 @@ class BooksService extends Service {
     }
 }
 
-serviceRegistry.registerService('books', BooksService);
+serviceRegistry.registerService('books', BooksService, ['recommendation']);
 
 module.exports = BooksService;

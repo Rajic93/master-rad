@@ -1,4 +1,5 @@
 
+const Sequelize = require('sequelize');
 const Service = require('../Service');
 const serviceRegistry = require('../ServiceRegistry');
 const { Users } = require('../../models');
@@ -11,6 +12,25 @@ class UsersService extends Service {
 
     async findByUsername(username) {
         return Users.findOne({ where: { username } });
+    }
+
+    async findByEmail(email) {
+        return Users.findOne({ where: { email } });
+    }
+
+    async findByEmailOrUsername(email, username) {
+        if (!email && !username) {
+            throw new Error('Provide email or username');
+        }
+        const where = {};
+        email && username && (where[Sequelize.Op.or] = {
+            email,
+            username,
+        })
+        email && !username && (where.email = email);
+        username && !email && (where.username = username);
+
+        return Users.findOne({ where });
     }
 
     async findById(id) {
@@ -51,6 +71,10 @@ class UsersService extends Service {
     }
 
     async create(user) {
+        const existingUser = await Users.findOne({ where: { email: user.email } });
+        if (existingUser) {
+            throw new Error('User already exists');
+        }
         return Users.create(user);
     }
 

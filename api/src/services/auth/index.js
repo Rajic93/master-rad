@@ -26,4 +26,4 @@ class AuthService extends Service {
 
 ServiceRegistry.registerService('auth', AuthService, ['users']);
 
-module.exports = new AuthService();
+module.exports = AuthService;
