@@ -1,7 +1,16 @@
-from django.urls import path
-from rec_api import views
+from django.urls import path, include
+from django.conf.urls import url
+from rest_framework import routers
+from rec_api.views import BookViewSet, recommend
 
+
+# Routers provide an easy way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+router.register(r'books', BookViewSet)
+
+# Wire up our API using automatic URL routing.
+# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', views.rec_api, name='rec_api'),
-    path('/books', views.list_books(), name='list_books')
+    url('/recommend', recommend, name='recommend'),
+    path('', include(router.urls)),
 ]

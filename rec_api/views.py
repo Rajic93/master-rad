@@ -1,17 +1,25 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from django.http import JsonResponse
+from rest_framework import serializers, viewsets
+from rest_framework.decorators import api_view
 from rec_api.models import Books
-import json
+from rec_api.recommend import Recommender
 
-# Create your views here.
-def rec_api(request): #view function
-    return JsonResponse({'message': 'desi le pi'})
 
-def list_books():
-    books = Books.objects.all()
+# Serializers define the API representation.
+class BookSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Books
+        fields = ['id', 'title', 'author', 'year', 'publisher', 'imageurls', 'imageurlm', 'imageurll']
 
-    data = {
-        "books": books
-    }
-    return HttpResponse(list(data), mimetype='application/json')
+# ViewSets define the view behavior.
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = Books.objects.all()
+    serializer_class = BookSerializer
+
+@api_view(['GET', 'POST', 'DELETE'])
+def recommend(request):
+    if request.method == 'GET':
+        recommender = Recommender();
+        books = request.query_params.getlist('books')
+        recommendations = recommender.test(books)
+        return JsonResponse(recommendations, safe=False)
