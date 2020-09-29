@@ -11,6 +11,7 @@ const PORT = 9000;
 app.use(bodyParser.urlencoded({ extended: false }))
 // json
 app.use(bodyParser.json());
-app.use('/', router);
+app.use(router(app));
 
 app.listen(PORT, () => console.log('Hello from users service!'));
+
