@@ -37,4 +37,4 @@ RUN pwd
 RUN ls -la
 
 # default command
-CMD [ "python3", "manage.py", "runserver", "0.0.0.0:8000" ]
+CMD [ "python3", "manage.py", "runserver", "0.0.0.0:8000", "--nothreading"]
