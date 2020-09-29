@@ -9,7 +9,23 @@ from rec_api.recommend import Recommender
 class BookSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Books
-        fields = ['id', 'title', 'author', 'year', 'publisher', 'imageurls', 'imageurlm', 'imageurll']
+        fields = [
+            'id',
+            'title',
+            'authors',
+            'year',
+            'language_code',
+            'average_rating',
+            'ratings_count',
+            'ratings_1',
+            'ratings_2',
+            'ratings_3',
+            'ratings_4',
+            'ratings_5',
+            'publisher',
+            'image_url',
+            'small_image_url',
+        ]
 
 # ViewSets define the view behavior.
 class BookViewSet(viewsets.ModelViewSet):
