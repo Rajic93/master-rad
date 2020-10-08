@@ -2,3 +2,4 @@
 db/package*
 db/*_prep.js
 */__pycache__
+*/.env
