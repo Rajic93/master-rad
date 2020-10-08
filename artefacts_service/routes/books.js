@@ -16,12 +16,7 @@ router.post('/', async (req, res) => {
   res.status(200).send(created);
 });
 
-router.post('/rate', async (req, res) => {
-
-  res.status(200).send(req.body);
-});
-
-router.put('/rate', async (req,res) => {
+router.post('/rate', async (req,res) => {
   const {
     entityId,
     rating,
