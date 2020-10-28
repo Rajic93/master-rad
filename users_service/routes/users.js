@@ -49,4 +49,17 @@ router.get('/:id/similar', (req,res) => {
     res.status(200).send(filtered);
 });
 
+router.get('/similar', async (req,res) => {
+    const cluster_label = req.user.cluster;
+
+    const similarUser = await User.findAll({
+        cluster_label
+    });
+
+    // get all books from similar users
+    const books = [];
+
+    res.status(200).send(books)
+});
+
 module.exports = router;

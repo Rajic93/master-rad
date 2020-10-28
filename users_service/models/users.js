@@ -93,7 +93,7 @@ class Users extends Sequelize.Model {
           type: DataTypes.STRING(255),
           allowNull: true,
         },
-        cluster_id: {
+        cluster_label: {
           type: DataTypes.INTEGER(11),
           allowNull: true,
         },
