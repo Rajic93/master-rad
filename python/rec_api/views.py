@@ -35,7 +35,7 @@ class BookViewSet(viewsets.ModelViewSet):
 @api_view(['GET', 'POST', 'DELETE'])
 def recommend(request):
     if request.method == 'GET':
-        recommender = Recommender();
+        recommender = Recommender()
         books = request.query_params.getlist('books')
         recommendations = recommender.test(books)
         return JsonResponse(recommendations, safe=False)
