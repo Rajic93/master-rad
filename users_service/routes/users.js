@@ -38,8 +38,15 @@ router.get('/cluster', (req,res) => {
     res.status(200).send('success');
 });
 
-router.get('/similar', (req,res) => {
-    res.status(200).send('success')
+router.get('/:id/similar', (req,res) => {
+    const { params: { id } } = req;
+    
+    const user = await User.findByPk(id);
+    const users = await User.findAll({ where: { cluster_id: user.cluster_id } );
+                                      
+    const filtered = user.filter((u) => u.id !== id);
+
+    res.status(200).send(filtered);
 });
 
 module.exports = router;
