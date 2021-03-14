@@ -30,7 +30,7 @@ services:
     postgres_db:
         image: postgres
         volumes:
-            - master_psqldb:/var/lib/postgresql/data
+            - ./db/postgres_new:/var/lib/postgresql/data
         ports:
             - 5003:5432
         environment:
