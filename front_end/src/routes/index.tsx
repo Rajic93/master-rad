@@ -11,6 +11,8 @@ const Routes = observer(() => {
     router
   } = useStores();
 
+  console.log({ allowedRoutes: router.allowedRoutes })
+
   return (
     <React.Suspense fallback={() => 'Loading'}>
       <Switch>

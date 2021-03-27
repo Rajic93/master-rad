@@ -1,7 +1,10 @@
 const Sequelize = require('sequelize');
 
 const connect = () => {
-    const instance = new Sequelize('postgres://yymcdtjs:Qph_VjNG4nv_bT-758_e3ZFzsoHXU5o0@balarama.db.elephantsql.com:5432/yymcdtjs', {
+    const instance = new Sequelize('masterdb', 'root', 'root', {
+        host: 'localhost',
+        port: 5003,
+        dialect: 'postgres',
         define: { freezeTableName: true },
     });
 

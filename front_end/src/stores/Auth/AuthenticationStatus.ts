@@ -1,9 +1,9 @@
-
 import { observable, computed, action } from 'mobx';
 
 export class AuthenticationStatus {
+  @observable token: string;
   @observable role: string;
-  @observable role: string;
+  @observable recentlyRegistered: boolean;
 
   @computed get isAuthenticated(): boolean {
     return !!this.token;
@@ -17,5 +17,10 @@ export class AuthenticationStatus {
   @action invalidate(): void {
     this.token = null;
     this.role = null;
+    this.recentlyRegistered = false;
+  }
+
+  @action setRecentlyRegistered(value) {
+    this.recentlyRegistered = value;
   }
 }

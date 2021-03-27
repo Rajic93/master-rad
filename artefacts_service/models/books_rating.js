@@ -23,22 +23,26 @@ class BookRating extends Sequelize.Model {
           type: DataTypes.INTEGER(11),
           allowNull: false,
         },
+        rating: { type: DataTypes.DECIMAL(5, 2) },
       },
       {
-        modelName: 'BookRating',
-        timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
-        deletedAt: 'deleted_at',
-        paranoid: true,
+        tableName: 'ratings',
+        timestamps: false,
+        // createdAt: 'created_at',
+        // updatedAt: 'updated_at',
+        // deletedAt: 'deleted_at',
+        // paranoid: true,
         sequelize,
       },
     );
   }
-  //
-  // static associate() {
-  //   this.belongsTo()
-  // }
+
+  static associate(models) {
+    this.belongsTo(models.Book, {
+      foreignKey: 'book_id',
+      as: 'bookRatingToBook'
+    });
+  }
 }
 
 module.exports = BookRating;

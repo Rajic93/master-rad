@@ -44,6 +44,11 @@ const Navigation = observer(() => {
       <Home />
       <br/>
       <Profile />
+      <Link
+        to='/register'
+      >
+        <span>Register</span>
+      </Link>
     </React.Fragment>
   );
 });

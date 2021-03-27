@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // json
 app.use(bodyParser.json());
 
-app.use(artefactResolution());
+// app.use(artefactResolution());
 
 registerRoutes(app);
 

@@ -38,6 +38,18 @@ const Test = () => {
       <Home />
       <br/>
       <Profile />
+      <br/>
+      <Link
+        to='/register'
+      >
+        <span>register</span>
+      </Link>
+      <br/>
+      <Link
+        to='/affinities'
+      >
+        <span>affinities</span>
+      </Link>
     </React.Fragment>
   );
 };

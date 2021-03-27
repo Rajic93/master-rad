@@ -1,6 +1,6 @@
 export default [
   {
-    key: 'landing.page',
+    key: 'home.page',
     isPublic: true,
     url: '/',
   },
@@ -10,13 +10,18 @@ export default [
     url: '/login',
   },
   {
-    key: 'home.page',
-    isPublic: false,
-    url: '/home',
-  },
-  {
     key: 'profile.page',
     isPublic: false,
     url: '/profile',
+  },
+  {
+    key: 'register.page',
+    isPublic: true,
+    url: '/register',
+  },
+  {
+    key: 'affinities.page',
+    isPublic: false,
+    url: '/affinities',
   },
 ];
