@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import api_view
-from rec_api.models import Books
+from rec_api.models import Books, Users
 from rec_api.recommend import Recommender
 
 
@@ -32,10 +32,23 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Books.objects.all()
     serializer_class = BookSerializer
 
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'PUT', 'DELETE'])
 def recommend(request):
     if request.method == 'GET':
+        print('heeloooo')
         recommender = Recommender()
         books = request.query_params.getlist('books')
+        print(books)
         recommendations = recommender.test(books)
         return JsonResponse(recommendations, safe=False)
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Users
+        fields = [
+            'id',
+            'lat',
+            'lng',
+            'age',
+        ]

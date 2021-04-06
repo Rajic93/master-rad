@@ -35,18 +35,32 @@ router.put('/:id', async (req, res) => {
 });
 
 router.get('/cluster', (req,res) => {
+    console.log({ a: 'herere' });
     res.status(200).send('success');
 });
 
-router.get('/:id/similar', (req,res) => {
+router.get('/:id/similar', async (req,res) => {
     const { params: { id } } = req;
     
     const user = await User.findByPk(id);
-    const users = await User.findAll({ where: { cluster_id: user.cluster_id } );
+    const users = await User.findAll({ where: { cluster_id: user.cluster_id } });
                                       
     const filtered = user.filter((u) => u.id !== id);
 
     res.status(200).send(filtered);
+});
+
+router.get('/similar', async (req,res) => {
+    const cluster_label = req.user.cluster;
+
+    const similarUser = await User.findAll({
+        cluster_label
+    });
+
+    // get all books from similar users
+    const books = [];
+
+    res.status(200).send(books)
 });
 
 module.exports = router;

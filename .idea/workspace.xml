@@ -3,6 +3,34 @@
   <component name="ChangeListManager">
     <list default="true" id="16f5d999-a913-4223-8665-8de2e0799c8f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/1259" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/1259" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/2619" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/2619" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/2619_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/2619_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/2696" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/2696" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/2840" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/2840" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/2840_fsm" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/2840_fsm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/2841" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/2841" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/32789" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/32789" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/32795" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/32795" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/base/16384/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/base/16384/pg_internal.init" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/global/pg_control" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/global/pg_control" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/global/pg_internal.init" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/global/pg_internal.init" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_stat/db_0.stat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_stat/db_16384.stat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_stat/global.stat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_stat_tmp/db_0.stat" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/pg_stat_tmp/db_0.stat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_stat_tmp/db_16384.stat" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/pg_stat_tmp/db_16384.stat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_stat_tmp/global.stat" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/pg_stat_tmp/global.stat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_wal/00000001000000000000001F" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_wal/000000010000000000000020" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_wal/000000010000000000000021" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_wal/000000010000000000000022" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/pg_wal/000000010000000000000022" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/pg_xact/0000" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/pg_xact/0000" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/postgres_new/postmaster.pid" beforeDir="false" afterPath="$PROJECT_DIR$/db/postgres_new/postmaster.pid" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users_service/models/client.js" beforeDir="false" afterPath="$PROJECT_DIR$/users_service/models/client.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users_service/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/users_service/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users_service/routes/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/users_service/routes/users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/users_service/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/users_service/server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

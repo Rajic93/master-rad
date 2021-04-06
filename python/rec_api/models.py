@@ -16,3 +16,11 @@ class Books(models.Model):
     image_url = models.CharField(max_length=1024)
     small_image_url = models.CharField(max_length=1024)
 
+class Users(models.Model):
+    id = models.IntegerField(max_length=11, primary_key=True)
+    lat = models.DecimalField(max_digits=8, decimal_places=6)
+    lng = models.DecimalField(max_digits=9, decimal_places=6)
+    age = models.IntegerField(max_length=3)
+    cluster_label = models.IntegerField(max_length=5)
+    class Meta:
+        db_table='User'

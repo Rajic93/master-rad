@@ -17,6 +17,7 @@ RUN python3 --version
 # install dependencies from python packages
 RUN pip3 --no-cache-dir install \
     pandas \
+    scipy \
     scikit-learn
 
 RUN pip3 install --upgrade numpy==1.14
@@ -28,6 +29,7 @@ RUN python3 -m pip install \
     Django==2.2.16 \
     djangorestframework
 
+RUN pip3 install psycopg2-binary
 
 # install your app
 

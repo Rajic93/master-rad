@@ -32,50 +32,56 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/register', async (req, res) => {
-  const credentials = req.body;
+  try {
+    console.log('herhehre')
+    const credentials = req.body;
 
-  const user = await User.findOne({ where: { email: credentials.email }});
-  if (user) {
-    return res.status(400).send('User already exists (Jok).');
+    const user = await User.findOne({ where: { email: credentials.email }});
+    console.log({ user })
+    if (user) {
+      return res.status(400).send('User already exists (Jok).');
+    }
+
+    // TODO: create real token and expiration time
+    const token = 'daskdasdasdmsalkdmaskldmsd';
+
+    const toBeCreated = {
+      ...credentials,
+      // status: 0,
+      // role: 'regular',
+      // activation_token: token,
+    };
+
+    const created = await User.create(toBeCreated);
+
+    // TODO: add to clusterization queue
+
+    delete created.password;
+
+    const name = `${created.get('first_name')} ${created.get('last_name')}`;
+    // const email = created.get('email');
+    // const emailTemplate = await EmailTemplate.findOne({
+    //   where: {
+    //     type: 'account_activation',
+    //     status: 1,
+    //   },
+    // });
+    // let emailStatus = -1;
+
+    // if (emailTemplate) {
+    //   const templateId = emailTemplate.get('template_id');
+    //   emailStatus = await EmailService.accountActivation(email, name, token, templateId);
+    // }
+
+    res.status(200).send({
+      user: created,
+      // status: emailStatus === -1
+      //   ? 'Failed to send activation email. Please contact support'
+      //   : undefined,
+    })
+  } catch(error) {
+    console.log({ error })
   }
-
-  // TODO: create real token and expiration time
-  const token = 'daskdasdasdmsalkdmaskldmsd';
-
-  const toBeCreated = {
-    ...credentials,
-    status: 0,
-    role: 'regular',
-    activation_token: token,
-  };
-
-  const created = await User.create(toBeCreated);
-
-  // TODO: add to clusterization queue
-
-  delete created.password;
-
-  const name = `${created.get('first_name')} ${created.get('last_name')}`;
-  const email = created.get('email');
-  const emailTemplate = await EmailTemplate.findOne({
-    where: {
-      type: 'account_activation',
-      status: 1,
-    },
-  });
-  let emailStatus = -1;
-
-  if (emailTemplate) {
-    const templateId = emailTemplate.get('template_id');
-    emailStatus = await EmailService.accountActivation(email, name, token, templateId);
-  }
-
-  res.status(200).send({
-    user: created,
-    status: emailStatus === -1
-      ? 'Failed to send activation email. Please contact support'
-      : undefined,
-  })
 })
 
 router.get('/activate/:token', async (req,res) => {

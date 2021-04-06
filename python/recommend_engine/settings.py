@@ -16,7 +16,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-MODELS = os.path.join(BASE_DIR, 'models')
+MODELS = str(os.path.join('/app','rec_api', 'models'))
 
 
 
@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'recommend_engine.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(str(BASE_DIR), 'db.sqlite3'),
     }
 }
 
