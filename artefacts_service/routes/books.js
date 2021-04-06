@@ -54,6 +54,8 @@ router.get('/', async (req, res) => {
       }
     ];
     const likedBooks = await Book.findAndCountAll(wh);
+
+    // 3. Call NN for similar books
   
     const start = Number.parseInt(userPage, 10) * Number.parseInt(userLimit, 10);
     const end = start + Number.parseInt(userLimit, 10);
