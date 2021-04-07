@@ -1,16 +1,56 @@
-//USER SERVICE: port:9000
-//auth
-//router.post('/login' 
-//router.post('/register',
-//router.get('/activate/:token',  
-//router.get('/deactivate', 
-//router.post('/forgot-password', 
-//router.post('/reset-password', 
-//users
-//router.get('/'
-//router.get('/:id'
-//router.delete('/:id'
-//router.put('/:id'
-//router.get('/cluster'
-//router.get('/:id/similar'
-//router.get('/similar'
+const express = require('express')
+const axios = require('axios')
+
+const router = express.Router();
+const baseURL = 'http://localhost:9002'
+const http = axios.create({ baseURL })
+
+router.get(`/`, async (req, res) => {
+    try {
+        const response = await http.get('/users/');      
+        res.status(200).send(response.data)
+    } catch (error) {
+        res.send(error.toString())
+    }
+});
+
+router.get(`/:id`, async (req, res) => {
+    try {
+        const { id } = req.params
+        const response = await http.get('/users/'+ id);
+        res.status(200).send(response.data)
+    } catch (error) {
+        res.send(error.toString())
+    }
+});
+
+router.delete(`/:id`, async (req, res) => {
+    try {
+        const response = await http.delete('/users/'+ req.params.id);
+        res.status(200).send(response.data)
+    } catch (error) {
+        res.send(error.toString())
+    }
+});
+
+router.get(`/:id/similar`, async (req, res) => {
+    try {
+        const { id } = req.params
+        const response = await http.get('/users/'+ id + '/similar');
+        res.status(200).send(response.data)
+    } catch (error) {
+        res.send(error.toString())
+    }
+});
+
+router.put(`/:id`, async (req, res) => {
+    try {
+        const { id } = req.params
+        const response = await http.put('/users/'+ id, req.body);
+        res.status(200).send(response.data)
+    } catch (error) {
+        res.send(error.toString())
+    }
+});
+
+module.exports = router;

@@ -4,7 +4,8 @@ const express = require('express')
 const axios = require('axios')
 
 const router = express.Router();
-const baseUrl = 'http://localhost:5000'
+const baseURL = 'http://localhost:5000'
+const http = axios.create({ baseURL })
 
 router.get(`/`, async (req, res) => {
     try {
@@ -12,9 +13,9 @@ router.get(`/`, async (req, res) => {
             labels,
             labelIds,
             clusters,
-        } = await axios(`${baseUrl}/`);
+        } = await http.get('/cluster');
 
-        res.send(labels)
+        res.send(clusters)
     } catch (error) {
         res.send(error.toString())
     }
