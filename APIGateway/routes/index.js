@@ -1,6 +1,8 @@
 const axios = require('axios')
+const clustesRouter = require('./clustering_engine')
 
 module.exports = (app) => {
+    app.use('/cluster', clustesRouter)
     app.use('/', async (req, res) => {
         try{
             const response = await axios({
