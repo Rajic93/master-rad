@@ -1,6 +1,7 @@
-docker stop rec-api
+docker-compose down
 
-docker system prune
+docker system prune -a -f
 
-sh build.sh 
-sh startup.sh
+docker-compose up -d
+
+w

@@ -1,30 +1,37 @@
 version: '3'
 
 services:
-    api:
-        build: ./api
+    api_gateway:
+        build: ./APIGateway
         volumes:
-            - ./api:/master-api
-            - master-api/node_modules
-        container_name: alx_master_api
+            - ./APIGateway:/master-api_gateway
+        container_name: master_api_gateway
         restart: unless-stopped
-        env_file: ./api/.env
+        env_file: ./APIGateway/.env
         ports:
-            - 5000:5000
-        command: "nodemon server.js"
+            - 8080:3000
         depends_on:
           - postgres_db
-    email_service:
-        build: ./email_service
+    artefacts_service:
+        build: ./artefacts_service
         volumes:
-            - ./email_service:/email-service
-            - email-service/node_modules
-        container_name: alx_email_service
+            - ./artefacts_service:/master-artefacts_service
+        container_name: master_artefacts_service
         restart: unless-stopped
-        env_file: ./email_service/.env
+        env_file: ./artefacts_service/.env
         ports:
-            - 5002:5002
-        command: "nodemon server.js"
+            - 9002:9002
+        depends_on:
+          - postgres_db
+    users_service:
+        build: ./users_service
+        volumes:
+            - ./users_service:/master-users_service
+        container_name: master_users_service
+        restart: unless-stopped
+        env_file: ./users_service/.env
+        ports:
+            - 9000:9000
         depends_on:
           - postgres_db
     postgres_db:
@@ -37,25 +44,6 @@ services:
             - POSTGRES_USER=root
             - POSTGRES_PASSWORD=root
             - POSTGRES_DB=masterdb
-            # - PG_
-#    cache:
-#        image: redis:latest
-#        ports:
-#            - 6379:6379
-#    clustering_engine:
-#        build:
-#            context: ./clustering_engine
-#            dockerfile: ./Dockerfile
-#        image: alx_clustering-engine
-#        container_name: alx_clustering_engine
-#        restart: unless-stopped
-#        env_file: ./clustering_engine/.env
-#        command: /clustering-engine/node_modules/.bin/nodemon server.js
-#        ports:
-#            - 5001:5001
-#        volumes:
-#            - ./clustering_engine:/clustering-engine
-#            - clustering-engine/node_modules
 
 volumes:
     master_psqldb:
