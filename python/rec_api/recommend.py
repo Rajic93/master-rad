@@ -125,7 +125,7 @@ class Recommender:
 
         return results
 
-    def test(self, titles):
+    def test(self, title):
         directory = os.path.dirname(os.path.realpath(__file__))
         model = self.loadModel(str(directory) + '/initial_training.h5')
         book_weights = self.initWeights(model)
@@ -136,14 +136,20 @@ class Recommender:
         self.loadData(str(directory) + '/books.csv', book_id_to_title, title_to_book_id, 9)
         self.loadData(str(directory) + '/tags.csv', tag_id_to_name, name_to_tag_id, 1)
 
-        results = [];
+        results = {};
 
-        for title in titles:
-            results.append(self.find_similar(title, book_weights, title_to_book_id, book_id_to_title, name_to_tag_id, name_to_tag_id))
+        # return titles
 
-        return results
+        # for title in titles:
+        #     res = self.find_similar(title, book_weights, title_to_book_id, book_id_to_title, name_to_tag_id, name_to_tag_id)
+        #     results.update({ title: res })
 
-        self.find_similar('The Hunger Games', book_weights, title_to_book_id, book_id_to_title, name_to_tag_id, name_to_tag_id)
-        self.find_similar("Harry Potter and the Philosopher's Stone", book_weights, title_to_book_id, book_id_to_title, name_to_tag_id, name_to_tag_id, return_dist = True)
+        # return results
+
+
+        
+        res = self.find_similar(str(title), book_weights, title_to_book_id, book_id_to_title, name_to_tag_id, name_to_tag_id)
+        # self.find_similar("Harry Potter and the Philosopher's Stone", book_weights, title_to_book_id, book_id_to_title, name_to_tag_id, name_to_tag_id, return_dist = True)
+        return res
         self.find_similar('Война и миръ', book_weights, title_to_book_id, book_id_to_title, name_to_tag_id, name_to_tag_id, return_dist = True)
         return 'Jeeste'

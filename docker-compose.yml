@@ -12,6 +12,7 @@ services:
             - 8080:3000
         depends_on:
           - postgres_db
+
     artefacts_service:
         build: ./artefacts_service
         volumes:
@@ -23,6 +24,7 @@ services:
             - 9002:9002
         depends_on:
           - postgres_db
+
     users_service:
         build: ./users_service
         volumes:
@@ -34,17 +36,36 @@ services:
             - 9000:9000
         depends_on:
           - postgres_db
+
     postgres_db:
         image: postgres
+        container_name: master_postgres_db
         volumes:
-            - ./db/postgres_new:/var/lib/postgresql/data
+            - ./db/postgres:/var/lib/postgresql/data
         ports:
             - 5003:5432
         environment:
             - POSTGRES_USER=root
             - POSTGRES_PASSWORD=root
             - POSTGRES_DB=masterdb
+            - POSTGRES_HOST_AUTH_METHOD=trust
+        networks: 
+            - masternet
+
+    neural_network:
+        build: ./python
+        container_name: master_neural_network
+        restart: always
+        ports:
+            - 5001:8000
+        links:
+            - postgres_db:postgres_db
+        networks: 
+            - masternet
 
 volumes:
     master_psqldb:
         external: true
+
+networks: 
+    masternet:

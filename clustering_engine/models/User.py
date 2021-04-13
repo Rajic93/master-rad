@@ -14,5 +14,5 @@ class UsersModel(db.Model):
     age = db.Column(db.Integer, nullable=True)
     cluster_label = db.Column(db.Integer, nullable=True)
 
-    def __repr__(self):
-        return f"Users(id = {self.id}, lat = {self.lat}, lng = {self.lng}, street = {self.street}, city = {self.city}, state = {self.state}, country = {self.country})"
+    # def __repr__(self):
+    #     return f"Users(id = {self.id}, lat = {self.lat}, lng = {self.lng}, street = {self.street}, city = {self.city}, state = {self.state}, country = {self.country})"

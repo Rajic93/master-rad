@@ -3,20 +3,29 @@ const express = require('express');
 const sequelize = require('sequelize');
 const { BookRating, Book, User } = require('../models');
 const _ = require('lodash');
-
+const axios = require('axios');
 
 const router = express.Router();
 
+const handlePromise = async (fn = e => e) => {
+  try {
+    const res = await fn();
+    return res;
+  } catch (error) {
+    return null
+  }
+} 
+
 router.get('/', async (req, res) => {
-  const { query: { hoodLimit = 10, hoodPage = 0, userLimit = 10, userPage = 0, clusterId, userId } = {} } = req;
+  const { query: { hoodLimit = 10, hoodPage = 0, userLimit = 10, userPage = 0, clusterId, userId, withSimilarities } = {} } = req;
 
   // instead of just fetching, use books from users from cluster
   // 1. get all user ids and books from the cluster
   let hoodRecommendations = { count: 0, rows: [] };
-  const where = { attributes: ['id'] };
+  const where = {};
   if (clusterId) {
     where.cluster_label = clusterId;
-    const neighbours = await User.findAll(where);
+    const neighbours = await User.findAll({ where,  attributes: ['id'] });
     const ids = neighbours.map(neighbour => neighbour.id);
     const neightboursBooks = await Book.findAndCountAll({
       include: [
@@ -42,6 +51,7 @@ router.get('/', async (req, res) => {
   // 2. get all books similart to the 
   let yourRecommendations = { count: 0, rows: [] };
   const wh = {};
+
   if (userId) {
     wh.include = [
       {
@@ -59,11 +69,55 @@ router.get('/', async (req, res) => {
   
     const start = Number.parseInt(userPage, 10) * Number.parseInt(userLimit, 10);
     const end = start + Number.parseInt(userLimit, 10);
-    const pagginatedYour = _.slice(likedBooks.rows, start, end);
-    yourRecommendations = {
-      count: likedBooks.count,
-      rows: pagginatedYour,
-    };
+
+    const titles = likedBooks.rows.map(book => book.title);
+
+    // TODO: add cache here
+
+    const promises = titles.map((title) => handlePromise(() => axios.get(
+      'http://localhost:5001/recommend',
+      { params: { title  } },
+    )));
+
+    const rawResults = await Promise.all(promises);
+
+    const results = rawResults.map(({ data }) => data).filter(e => e).reduce((acc, curr) => {
+      if (!curr[0] || !curr[0][0]) {
+        return acc;
+      }
+      if (withSimilarities) {
+        acc[curr[0][0]] = curr.slice(1);
+      } else {
+        acc[curr[0][0]] = curr.slice(1).map(b => b[0]);
+      }
+      return acc;
+    }, {});
+    
+    if (withSimilarities) {
+      yourRecommendations = {
+        count: likedBooks.count,
+        rows: results,
+      };
+    } else {
+      let finalRes = results;
+      const promissesBooks = Object.values(results).map(titles => Book.findAll({ where: { title: { [sequelize.Op.in]: titles } } }));
+      try {
+        const res = await Promise.all(promissesBooks);
+        
+        finalRes = res.reduce((acc, vals, index) => {
+          const title = Object.keys(results)[index];
+          acc[title] = vals;
+          return acc;
+        }), {};
+      } catch (e) {
+
+      }
+
+      yourRecommendations = {
+        count: likedBooks.count,
+        rows: finalRes,
+      };
+    }
   }
 
 
