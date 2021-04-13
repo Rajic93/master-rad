@@ -9,7 +9,7 @@ services:
         restart: unless-stopped
         env_file: ./APIGateway/.env
         ports:
-            - 8080:3000
+            - 9080:3000
         depends_on:
           - postgres_db
 
