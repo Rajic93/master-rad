@@ -1,5 +1,4 @@
 */node_modules
-db/package*
-db/*_prep.js
+db/*
 */__pycache__
 */.env
