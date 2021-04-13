@@ -19,7 +19,7 @@ The first command will start them in the foreground, while the second will start
 
 The rest two apps must be started manually.
 
-##Ports
+## Ports
 - API Gateway: `9080`
 - Artefacts service: `9002`
 - Users service: `9000`
