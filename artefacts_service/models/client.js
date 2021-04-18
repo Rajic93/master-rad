@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize');
 
 const connect = () => {
-    const instance = new Sequelize('masterdb', 'root', 'root', {
-        host: 'localhost',
-        port: 5003,
+    const instance = new Sequelize('deq0ftt8uapr2p', 'fnkgdhsztkvzsj', '61ae98db23550c112620cfca8e02fc721471c412e44aa729a9eb6e1b15d203c1', {
+        host: 'ec2-54-74-156-137.eu-west-1.compute.amazonaws.com',
+        port: 5432,
         dialect: 'postgres',
         define: { freezeTableName: true },
     });
