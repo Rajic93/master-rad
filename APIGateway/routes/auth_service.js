@@ -3,10 +3,14 @@ const axios = require('axios')
 
 const router = express.Router();
 const baseURL = 'http://localhost:9000'
+const baseURLClusterizationEngine = 'http://localhost:5000'
 const http = axios.create({ baseURL })
+const httpClusterizationEngine = axios.create({ baseURL: baseURLClusterizationEngine })
 
 router.post(`/login`, async (req, res) => {
     try {
+
+        console.log({ data: req.body })
 
         const response = await http.post('/auth/login', req.body);
         res.status(200).send(response.data)
@@ -19,11 +23,27 @@ router.post(`/login`, async (req, res) => {
 router.post(`/register`, async (req, res) => {
     try {
 
-        const response = await http.post('/auth/register', req.body);
-        res.status(200).send(response.data)
+        const { data: { user } } = await http.post('/auth/register', req.body)
+
+        if (user.lat && user.lng) {
+            const { data: cluster } = await httpClusterizationEngine.post('/cluster', {
+                id: user.id,
+                lat: user.lat,
+                lng: user.lng,
+                age: user.age,
+            });
+            user.cluster_label = cluster
+        }
+
+
+        res.status(200).send(user)
 
     } catch (error) {
-        res.send(error.toString())
+        if (error.response.status >= 400 && error.response.status < 500) {
+            res.send(error.response.data)
+        } else {
+            res.send(error.toString())
+        }
     }
 });
 

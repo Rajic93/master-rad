@@ -1,19 +1,23 @@
-FROM mhart/alpine-node
+FROM node:13-alpine
 
 WORKDIR /master-users_service
 
-RUN npm install -g nodemon
-
-COPY package.json /master-users_service/package.json
-COPY package-lock.json /master-users_service/package-lock.json
+RUN apk --no-cache add --virtual native-deps \
+  git g++ gcc libgcc libstdc++ linux-headers make python postgresql-dev && \
+  npm install node-gyp -g &&\
+  npm install &&\
+  npm rebuild bcrypt --build-from-source && \
+  npm cache clean --force &&\
+  apk del native-deps 
 
 COPY . .
-
 # install dependencies
-RUN npm ci
+RUN npx ci
+
+RUN npm i -g nodemon
 
 # expose port
 EXPOSE 9000
 
 # run server
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "start"]

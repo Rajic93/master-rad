@@ -7,8 +7,8 @@ class Books {
     @observable yourCount = 0;
     @observable hoodCount = 0;
 
-    @action load(query) {
-        return loadBooks({...query, userId: 999999 })
+    @action load(query: any) {
+        return loadBooks(query)
             .then(({
                 yourRecommendations: {
                     rows: yourBooks,
@@ -19,10 +19,19 @@ class Books {
                     count: hoodCount,
                 },
             }) => {
-                this.yourList = yourBooks;
-                this.hoodList = hoodBooks;
-                this.yourCount = yourCount;
-                this.hoodCount = hoodCount;
+                console.log({
+                    yourBooks,
+                    hoodBooks,
+                    yourCount,
+                    hoodCount,
+                })
+                this.yourList = yourBooks || [];
+                if (Object.keys(yourBooks).length === 0) {
+                    this.yourList = yourBooks || [];
+                }
+                this.hoodList = hoodBooks || [];
+                this.yourCount = yourCount || 0;
+                this.hoodCount = hoodCount || 0;
             });
     }
 

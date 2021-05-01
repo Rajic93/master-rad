@@ -2,6 +2,8 @@ FROM mhart/alpine-node
 
 WORKDIR /master-artefacts_service
 
+RUN command
+
 RUN npm install -g nodemon
 
 COPY package.json /master-artefacts_service/package.json

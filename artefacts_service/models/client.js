@@ -6,6 +6,7 @@ const connect = () => {
         port: 5432,
         dialect: 'postgres',
         define: { freezeTableName: true },
+        native: true,
     });
 
     instance.authenticate()

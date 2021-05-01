@@ -1,7 +1,7 @@
 export default [
   {
     key: 'home.page',
-    isPublic: true,
+    isPublic: false,
     url: '/',
   },
   {

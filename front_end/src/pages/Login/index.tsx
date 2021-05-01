@@ -25,10 +25,11 @@ const Test = observer(() => {
   const history = useHistory();
 
   const onFinish = (values: any) => {
-    form.submit().then(({ token, role }) => {
+    form.submit().then(({ token, role, id }) => {
       authStatus.authenticate({
         token,
         role: role || 'regular',
+        id,
       });
       authStatus.recentlyRegistered
        ? history.push('/affinities')

@@ -109,46 +109,50 @@ class DBScan:
             avg_age = sum_age / counter
             center_coors = calculate_center_coordinates(coords)
             cluster.avg_age = avg_age
-            cluster.center_lat = center_coors.center_lat
-            cluster.center_lng = center_coors.center_lng
+            cluster.center_lat = center_coors.lat
+            cluster.center_lng = center_coors.lng
 
             normalized_clusters.append({
                 avg_age: avg_age,
-                center_lat: center_coors.center_lat,
-                enter_lng: center_coors.center_lng,
+                center_lat: center_coors.lat,
+                enter_lng: center_coors.lng,
                 id: cluster.id,
                 users: cluster.users
             })
 
         return normalized_clusters
 
-    def find_the_most_suitable_cluster_for_new_user(clusters, user, age_epsilon, lat_epsilon, lng_epsilon):
+    def find_the_most_suitable_cluster_for_new_user(self, clusters, user, age_epsilon, lat_epsilon, lng_epsilon):
         cluster_id = 0
         current_age_difference = age_epsilon
         current_lat_difference = lat_epsilon
         current_lng_difference = lng_epsilon
+        print(user)
 
         for cluster in clusters:
-            age_difference = cluster.avg_age - user.age
-            lat_difference = cluster.avg_lat - user.lat
-            lng_difference = cluster.avg_lng - user.lng
+            age_difference = cluster['avg_age'] - user.age
+            lat_difference = cluster['avg_lat'] - user.lat
+            lng_difference = cluster['avg_lng'] - user.lng
 
             if age_difference < current_age_difference and lat_difference < current_lat_difference and lng_difference < current_lng_difference:
-                cluster_id = cluster.id
+                cluster_id = cluster['id']
 
         return cluster_id
 
-    def calculate_center_coordinates(coordinates):
-        counter = 1
+    def calculate_center_coordinates(self, coordinates):
+        counter = 0
         sum_lat = 0
         sum_lng = 0
+        sum_age = 0
         for coords in coordinates:
-            sum_lat = sum_lat + coords.lat
-            sum_lng = sum_lng + coords.lng
+            sum_lat = sum_lat + (coords['lat'] or 0)
+            sum_lng = sum_lng + (coords['lng'] or 0)
+            sum_age = sum_age + (coords['age'] or 0)
             counter = counter + 1
         return {
-            center_lat: sum_lat / counter,
-            center_lng: sum_lng / counter,
+            "lat": sum_lat / counter,
+            "lng": sum_lng / counter,
+            "age": sum_age / counter,
         }
 
     def getLabels(self):

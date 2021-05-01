@@ -76,10 +76,10 @@ class Users extends Sequelize.Model {
           type: DataTypes.DECIMAL(9, 6),
           allowNull: true,
         },
-        // activation_token: {
-        //   type: DataTypes.STRING(255),
-        //   allowNull: true,
-        // },
+        raw_address: {
+          type: DataTypes.STRING(255),
+          allowNull: true,
+        },
         // activation_token_expiry: {
         //   type: DataTypes.DATE,
         //   allowNull: true,

@@ -1,12 +1,13 @@
 const express = require('express');
 const { User, EmailTemplate } = require('../models');
-const EmailService = require('../services/Email');
 const { sign } = require('../utilities/jwt');
+const axios = require('axios');
 
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
   const credentials = req.body;
+  console.log({ credentials   })
 
   const user = await User.findOne({ where: { email: credentials.email }});
   if (!user) {
@@ -28,16 +29,16 @@ router.post('/login', async (req, res) => {
     role: user.get('role'),
   });
 
-  res.status(200).send({ token: jwtToken });
+  res.status(200).send({ token: jwtToken, id: user.get('id') });
 })
 
 router.post('/register', async (req, res) => {
   try {
-    console.log('herhehre')
+
     const credentials = req.body;
 
     const user = await User.findOne({ where: { email: credentials.email }});
-    console.log({ user })
+
     if (user) {
       return res.status(400).send('User already exists (Jok).');
     }
@@ -45,8 +46,11 @@ router.post('/register', async (req, res) => {
     // TODO: create real token and expiration time
     const token = 'daskdasdasdmsalkdmaskldmsd';
 
+    const rawAddress = [credentials.street, credentials.city, credentials.state, credentials.country].filter(e => e).join(', ');
+
     const toBeCreated = {
       ...credentials,
+      raw_address: rawAddress,
       // status: 0,
       // role: 'regular',
       // activation_token: token,
@@ -57,6 +61,25 @@ router.post('/register', async (req, res) => {
     // TODO: add to clusterization queue
 
     delete created.password;
+
+    console.log({ rawAddress })
+
+    const params = {
+        access_key: 'bf047cd1391320397c1c53c10874a485',
+        query: rawAddress,
+    }
+
+    const { data: { data: addresses } } = await axios.get('http://api.positionstack.com/v1/forward', { params });
+    const payload = { ...created.dataValues }
+    if (addresses[0]) {
+      const address = addresses[0];
+      console.log({ address })
+      const lat = address.latitude ? `${address.latitude}` : null;
+      const lng = address.longitude ? `${address.longitude}` : null;
+      await User.update({ lat, lng }, { where: { id: created.id } })
+      payload.lat = lat;
+      payload.lng = lng;
+    }
 
     const name = `${created.get('first_name')} ${created.get('last_name')}`;
     // const email = created.get('email');
@@ -74,7 +97,7 @@ router.post('/register', async (req, res) => {
     // }
 
     res.status(200).send({
-      user: created,
+      user: payload,
       // status: emailStatus === -1
       //   ? 'Failed to send activation email. Please contact support'
       //   : undefined,
@@ -103,32 +126,32 @@ router.get('/activate/:token', async (req,res) => {
   res.status(200).send('success')
 })
 
-router.get('/deactivate', async (req,res) => {
-  const { email } = req.body;
+// router.get('/deactivate', async (req,res) => {
+//   const { email } = req.body;
 
-  // TODO: create real token and expiration time
-  const token = 'daskdasdasdmsalkdmaskldmsd';
+//   // TODO: create real token and expiration time
+//   const token = 'daskdasdasdmsalkdmaskldmsd';
 
-  await User.update({
-    status: 9,
-    activation_token: token,
-  }, { where: { email } });
+//   await User.update({
+//     status: 9,
+//     activation_token: token,
+//   }, { where: { email } });
 
-  const emailTemplate = await EmailTemplate.findOne({
-    where: {
-      type: 'account_goodbye',
-      status: 1,
-    },
-  });
-  let emailStatus = -1;
+//   const emailTemplate = await EmailTemplate.findOne({
+//     where: {
+//       type: 'account_goodbye',
+//       status: 1,
+//     },
+//   });
+//   let emailStatus = -1;
 
-  if (emailTemplate) {
-    const templateId = emailTemplate.get('template_id');
-    emailStatus = await EmailService.accountDeactivation(email, name, token, templateId);
-  }
+//   if (emailTemplate) {
+//     const templateId = emailTemplate.get('template_id');
+//     emailStatus = await EmailService.accountDeactivation(email, name, token, templateId);
+//   }
 
-  res.status(200).send(emailStatus === 1 ? 'success' : 'Failed to send Goodbye email');
-})
+//   res.status(200).send(emailStatus === 1 ? 'success' : 'Failed to send Goodbye email');
+// })
 
 router.post('/forgot-password', (req, res) => {
   // necemo za sada

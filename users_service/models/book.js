@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-class Book extends Sequelize.Model {
+class Application extends Sequelize.Model {
     static init(sequelize, DataTypes) {
         return super.init(
             {
@@ -9,21 +9,21 @@ class Book extends Sequelize.Model {
                     primaryKey: true,
                     autoIncrement: true,
                 },
-                book_name: {
+                name: {
                   type: DataTypes.TEXT,
                   allowNull: false,
                 },
-                book_description: {
+                api_key: {
                     type: DataTypes.TEXT,
                     allowNull: true,
                 },
-                avg_rating: {
-                    type: DataTypes.DECIMAL(3, 2),
+                config: {
+                    type: DataTypes.JSON,
                     allowNull: true,
                 },
             }, 
             {
-              tableName: 'books',
+              tableName: 'applications',
               timestamps: false,
               // createdAt: 'created_at',
               // deletedAt: 'deleted_at',
@@ -35,4 +35,4 @@ class Book extends Sequelize.Model {
     }
 }
 
-module.exports = Book;
+module.exports = Application;

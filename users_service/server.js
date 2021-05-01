@@ -16,6 +16,7 @@ const PORT = 9000;
 app.use(cors());
 app.use(helmet());
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
+app.use(express.json())
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 // json

@@ -1,9 +1,10 @@
 //CLUSTERING ENGINE port:5000
-//api.add_resource(DBScanController, "/cluster") getAll/Post
+
 const express = require('express')
-const axios = require('axios')
 
 const router = express.Router();
+const axios = require('axios')
+
 const baseURL = 'http://localhost:5000'
 const http = axios.create({ baseURL })
 

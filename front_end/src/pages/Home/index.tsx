@@ -74,7 +74,7 @@ const Test = observer(() => {
   const [userOffset, setUOffset] = useState(0);
   const { authStatus } = useStores();
 
-  useEffect(() => { books.load({ userLimit, userOffset, hoodOffset, hoodLimit }); }, [hoodLimit, hoodOffset, userLimit, userOffset]);
+  useEffect(() => { books.load({ userLimit, userOffset, hoodOffset, hoodLimit, userId: authStatus.userId }); }, [hoodLimit, hoodOffset, userLimit, userOffset]);
 
   return (
     <React.Fragment>

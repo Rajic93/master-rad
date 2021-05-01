@@ -10,8 +10,6 @@ services:
         env_file: ./APIGateway/.env
         ports:
             - 9080:3000
-        depends_on:
-          - postgres_db
 
     artefacts_service:
         build: ./artefacts_service
@@ -22,35 +20,14 @@ services:
         env_file: ./artefacts_service/.env
         ports:
             - 9002:9002
-        depends_on:
-          - postgres_db
 
     users_service:
         build: ./users_service
-        volumes:
-            - ./users_service:/master-users_service
         container_name: master_users_service
         restart: unless-stopped
         env_file: ./users_service/.env
         ports:
             - 9000:9000
-        depends_on:
-          - postgres_db
-
-    postgres_db:
-        image: postgres
-        container_name: master_postgres_db
-        volumes:
-            - ./db/postgres:/var/lib/postgresql/data
-        ports:
-            - 5003:5432
-        environment:
-            - POSTGRES_USER=root
-            - POSTGRES_PASSWORD=root
-            - POSTGRES_DB=masterdb
-            - POSTGRES_HOST_AUTH_METHOD=trust
-        networks: 
-            - masternet
 
     neural_network:
         build: ./python
@@ -58,8 +35,6 @@ services:
         restart: always
         ports:
             - 5001:8000
-        links:
-            - postgres_db:postgres_db
         networks: 
             - masternet
 

@@ -9,8 +9,10 @@ COPY package-lock.json /master-api_gateway/package-lock.json
 
 COPY . .
 
+run ls -la
+
 # install dependencies
-RUN npm ci
+RUN npm i
 
 # expose port
 EXPOSE 3000
