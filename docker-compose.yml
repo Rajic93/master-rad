@@ -3,18 +3,18 @@ version: '3'
 services:
     api_gateway:
         build: ./APIGateway
-        volumes:
-            - ./APIGateway:/master-api_gateway
         container_name: master_api_gateway
         restart: unless-stopped
         env_file: ./APIGateway/.env
+        environment: 
+            - BASE_URL_ARTEFACTS=http://artefacts_service:9002
+            - BASE_URL_USERS=http://users_service:9000
+            - BASE_URL_CLUSTERIZATION=http://clustering_engine:5000
         ports:
-            - 9080:3000
+            - 9080:9080
 
     artefacts_service:
         build: ./artefacts_service
-        volumes:
-            - ./artefacts_service:/master-artefacts_service
         container_name: master_artefacts_service
         restart: unless-stopped
         env_file: ./artefacts_service/.env
@@ -38,9 +38,12 @@ services:
         networks: 
             - masternet
 
-volumes:
-    master_psqldb:
-        external: true
+    clustering_engine:
+        build: ./clustering_engine
+        container_name: master_clustering_engine
+        restart: unless-stopped
+        ports:
+            - 5000:5000
 
 networks: 
     masternet:

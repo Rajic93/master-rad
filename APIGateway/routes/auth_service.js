@@ -2,8 +2,8 @@ const express = require('express')
 const axios = require('axios')
 
 const router = express.Router();
-const baseURL = 'http://localhost:9000'
-const baseURLClusterizationEngine = 'http://localhost:5000'
+const baseURL = process.env.BASE_URL_USERS || 'http://localhost:9000'
+const baseURLClusterizationEngine = process.env.BASE_URL_CLUSTERIZATION || 'http://localhost:5000'
 const http = axios.create({ baseURL })
 const httpClusterizationEngine = axios.create({ baseURL: baseURLClusterizationEngine })
 

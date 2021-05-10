@@ -5,7 +5,7 @@ const express = require('express')
 const router = express.Router();
 const axios = require('axios')
 
-const baseURL = 'http://localhost:5000'
+const baseURL = process.env.BASE_URL_CLUSTERIZATION || 'http://localhost:5000'
 const http = axios.create({ baseURL })
 
 router.get(`/`, async (req, res) => {

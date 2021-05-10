@@ -2,7 +2,7 @@ const express = require('express')
 const axios = require('axios')
 
 const router = express.Router();
-const baseURL = 'http://localhost:9002'
+const baseURL = process.env.BASE_URL_ARTEFACTS || 'http://localhost:9002'
 const http = axios.create({ baseURL })
 
 router.get(`/`, async (req, res) => {

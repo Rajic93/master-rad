@@ -11,6 +11,12 @@ router.get('/', async (req, res) => {
 
   // instead of just fetching, use books from users from cluster
   // 1. get all user ids and books from the cluster
+  if (!userId) {
+    return res.status(200).send({
+      yourRecommendations: {},
+      hoodRecommendations: {},
+    });
+  }
   const user = await User.findOne({ where: { id: userId } });
   const hoodRecommendations = await getClusterRecommendations({ hoodLimit, hoodPage, clusterId: user.cluster_label });
   

@@ -4,8 +4,6 @@ const artefactsRouter = require('./artefacts_service')
 const authRouter = require('./auth_service')
 const usersRouter = require('./users_service')
 
-
-
 module.exports = (app) => {
     app.use('/cluster', clustesRouter)
     app.use('/books', artefactsRouter)
