@@ -39,6 +39,7 @@ router.post(`/register`, async (req, res) => {
         res.status(200).send(user)
 
     } catch (error) {
+        console.log({ error })
         if (error.response.status >= 400 && error.response.status < 500) {
             res.send(error.response.data)
         } else {

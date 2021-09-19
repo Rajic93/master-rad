@@ -28,7 +28,7 @@ const Affinities = observer(() => {
 
   const onSubmitHandler = () => affinities.submit().then(() => {
     authStatus.setRecentlyRegistered(false);
-    history.push('/home');
+    history.push('/');
   });
 
 

@@ -10,3 +10,8 @@ six==1.15.0
 SQLAlchemy==1.3.18
 Werkzeug==1.0.1
 flask_restful
+psycopg2
+# numpy
+# scipy
+# pandas
+# scikit_learn

@@ -12,10 +12,37 @@ const handlePromise = async (fn = e => e) => {
     }
 }
 
+const getHistory = async (userId, limit, offset) => {
+  const ratings = await BookRating.findAll({ where: { user_id: Number.parseInt(userId, 10) }, attributes: ['book_id', 'rating'] });
+  const ids = _.map(Array.from(new Set(ratings)), (r) => r.book_id);
+  if (!ids || ids.length === 0) {
+    return {
+      count: 0,
+      rows: [],
+    };
+  }
+
+  const books = await Book.findAndCountAll({
+    where: { id: ids },
+    limit,
+    offset,
+  })
+  books.rows = _.map(books.rows, (book) => {
+    const found = _.find(ratings, (r) => Number.parseInt(r.book_id, 10) === Number.parseInt(book.id, 10));
+
+    return {
+      ...book.dataValues,
+      rating: found ? Number.parseFloat(found.rating) : 0,
+    };
+  });
+
+  return books;
+}
+
 const getClusterRecommendations = async ({ hoodLimit = 10, hoodPage = 0, clusterId }) => {
     let recommendations = { count: 0, rows: [] };
     if (clusterId) {
-    const where = { cluster_label: clusterId };
+      const where = { cluster_label: clusterId };
       const neighbours = await User.findAll({ where, attributes: ['id'] });
       const ids = neighbours.map(neighbour => neighbour.id);
 
@@ -48,14 +75,14 @@ const getSimilarRecommendations = async ({ userLimit = 10, userPage = 0, userId,
     let recommendations = { count: 0, rows: [] };
     if (userId) {
         const likedBooks = await Book.findAndCountAll({
-            include: [{
-                model: BookRating,
-                as: 'bookToBookRating',
-                where: {
-                    user_id: userId,
-                    rating: { [sequelize.Op.gte]: 6 }
-                },
-            }]
+          include: [{
+              model: BookRating,
+              as: 'bookToBookRating',
+              where: {
+                  user_id: userId,
+                  rating: { [sequelize.Op.gte]: 6 }
+              },
+          }]
         });
     
         // 3. Call NN for similar books
@@ -101,9 +128,12 @@ const getSimilarRecommendations = async ({ userLimit = 10, userPage = 0, userId,
             
             finalRes = res.reduce((acc, vals, index) => {
               const title = Object.keys(results)[index];
-              acc[title] = vals;
+              acc.push({
+                ...vals,
+                title,
+              });
               return acc;
-            }), {};
+            }, []);
             raw = _.union(...res);
           } catch (e) {
     
@@ -122,4 +152,5 @@ const getSimilarRecommendations = async ({ userLimit = 10, userPage = 0, userId,
 module.exports = {
     getClusterRecommendations,
     getSimilarRecommendations,
+    getHistory,
 }

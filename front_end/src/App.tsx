@@ -15,7 +15,7 @@ import stores, { useStores } from './stores';
 import Routes from './routes';
 
 const ReactiveMenu = observer(() => {
-  const { authStatus } = useStores();
+  const { authStatus,  } = useStores();
 
   return (
     <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>

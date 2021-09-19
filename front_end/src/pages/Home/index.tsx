@@ -2,28 +2,35 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { Card, Row, Rate, Pagination, Typography, Tabs } from 'antd';
+import { Card, Row, Rate, Pagination, Typography, Tabs, Spin, Input, Popover } from 'antd';
 import { CheckOutlined, CloseOutlined, StarOutlined } from '@ant-design/icons';
 import Books from '../../stores/Artefacts/Books';
 import { useStores } from '../../stores';
 
 const { Meta } = Card;
+const { Search } = Input;
 
 const { TabPane } = Tabs;
 
-const Book = ({ book, onRate }) => {
-  const [rated, setRated] = useState(0);
-  const [rating, setRating] = useState(0);
+const Book = ({ isAuthenticated, book, onRate, userId }) => {
+  const [rated, setRated] = useState(book.rating ? 0 : 0);
+  const [rating, setRating] = useState(book.rating || 0);
 
   const Description = () => (
     <>
-      <Typography.Text>{book.authors}</Typography.Text>
+      <Typography.Text>{`Authors: ${book.authors}`}</Typography.Text>
+      <br />
+      <Typography.Text>{`Pulisher: ${book.publisher}`}</Typography.Text>
+      <br />
+      <Typography.Text>{`ISBN: ${book.isbn}`}</Typography.Text>
+      <br />
+      <Typography.Text>{`Year: ${book.year}`}</Typography.Text>
     </>
   )
 
   return (
     <Card
-      style={{ width: 300, margin: 10 }}
+      style={{ width: 300, margin: 10, height: 'fit-content' }}
       cover={
         <img
           alt={book.title}
@@ -31,7 +38,7 @@ const Book = ({ book, onRate }) => {
           style={{ width: 300, height: 400, objectFit: 'cover' }}
         />
       }
-      actions={[
+      actions={isAuthenticated && [
         <>
           {rated === 0 && (
             <Row align="middle" justify="center" onClick={() => setRated(1)}>
@@ -59,65 +66,171 @@ const Book = ({ book, onRate }) => {
       ]}
     >
       <Meta
-        title={book.title}
+        title={(
+          <Popover
+            content={book.title}
+          >
+            <Typography.Title
+              level={4}
+              style={{ cursor: 'help' }}
+            >
+              {book.title}
+            </Typography.Title>
+          </Popover>
+        )}
         description={<Description />}
       />
     </Card>
   )
 }
 
-const Test = observer(() => {
-  const [books] = useState(new Books())
-  const [hoodLimit, setHLimit] = useState(10);
-  const [hoodOffset, setHOffset] = useState(0);
-  const [userLimit, setULimit] = useState(10);
-  const [userOffset, setUOffset] = useState(0);
-  const { authStatus } = useStores();
+const TabContent = observer(({ enableSearch = false, isAuthenticated, userId, emptyMessage, config }) => {
+  const [books] = useState(new Books(config));
+  const [offset, setOffset] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [phrase, setPhrase] = useState('');
+  const [limit, setLimit] = useState(10);
 
-  useEffect(() => { books.load({ userLimit, userOffset, hoodOffset, hoodLimit, userId: authStatus.userId }); }, [hoodLimit, hoodOffset, userLimit, userOffset]);
+  useEffect(() => {
+    document.addEventListener('onLogout', () => {
+      books.clear();
+    });
+  }, [])
+
+  useEffect(() => {
+    setIsLoading(true);
+    books
+    .load({ userId, pageSize: limit, page: offset, phrase })
+    .then(() => setIsLoading(false))
+    .catch(() => setIsLoading(false));
+  }, [offset, limit, phrase]);
+
+
+  if (isLoading) {
+    return (
+      <div style={{ width: '100%', paddingTop: '30vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ flex: 1 }}>
+          <Typography.Paragraph>We are getting your books. Please be patient.</Typography.Paragraph>
+        </div>
+        <div style={{ flex: 1 }}>
+          <Spin size="large"/>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      {enableSearch && (
+        <Row>
+          <Search
+            placeholder="Search by title or author..."
+            onSearch={(newPhrase) => setPhrase(newPhrase)}
+            allowClear
+          />
+        </Row>
+      )}
+      {books.list && books.list.length > 0 && (
+        <Row justify="center">
+          {books.list.map((book) => <Book userId={userId} isAuthenticated={isAuthenticated} book={book} onRate={(id, rating) => books.rate(id, rating, userId)} />)}
+        </Row>
+      )}
+      {books.list && books.list.length > 0 && (
+        <Pagination
+          current={offset + 1} 
+          total={books.count}
+          onShowSizeChange={(current,size) => {
+            console.log({ size, current })
+            setLimit(size)}
+          }
+          showSizeChanger
+          onChange={(page) => setOffset(page)}
+        />
+      )}
+      {books.list && books.list.length === 0 && (
+        <Typography.Paragraph>
+          {emptyMessage}
+        </Typography.Paragraph>
+      )}
+    </>
+  )
+});
+
+const Home = observer(() => {
+  const { authStatus } = useStores();
+  const [currentKey, setCurrentKey] = useState('1');
 
   return (
     <React.Fragment>
-      <Tabs defaultActiveKey="1">
+      <Tabs defaultActiveKey={currentKey} onChange={(activeKey) => setCurrentKey(activeKey)}>
         {authStatus.isAuthenticated && (
-          <TabPane tab="Your likeables" key="1">
-            <Row justify="center">
-              {books.yourList.map((book) => <Book book={book} onRate={(id, rating) => books.rate(id, rating)} />)}
-            </Row>
-            {books.yourList && books.yourList.length > 0 && (
-              <Pagination
-                defaultCurrent={Math.floor(books.yourCount / (userOffset * userLimit))} 
-                total={books.yourCount}
-                onShowSizeChange={(current,size) => {
-                  console.log({ size, current })
-                  setULimit(size)}
-                }
-                showSizeChanger
-                onChange={(page) => setUOffset(page)}
-              />
-            )}
+          <TabPane
+            tab="All Books"
+            key="1"
+          >
+            <TabContent
+              isAuthenticated={authStatus.isAuthenticated}
+              userId={authStatus.userId}
+              emptyMessage="Currently there are no any books."
+              key="1"
+              currentyKey={currentKey}
+              enableSearch
+            />
           </TabPane>
         )}
-        <TabPane tab="From your hood" key="2">
-          <Row justify="center">
-            {books.hoodList.map((book) => <Book book={book} onRate={(id, rating) => books.rate(id, rating)} />)}
-          </Row>
-            {books.hoodList && books.hoodList.length > 0 && (
-            <Pagination
-              defaultCurrent={Math.floor(books.hoodCount / (hoodOffset * hoodLimit))} 
-              total={books.hoodCount}
-              onShowSizeChange={(current,size) => {
-                console.log({ size, current })
-                setHLimit(size)}
-              }
-              showSizeChanger
-              onChange={(page) => setHOffset(page)}
+        {authStatus.isAuthenticated && (
+          <TabPane
+            tab="Your recommendations"
+            key="2"
+          >
+            <TabContent
+              isAuthenticated={authStatus.isAuthenticated}
+              userId={authStatus.userId}
+              emptyMessage="Currently there are no books similar to what you have liked. See recommendations from your neighbourhood and try again later."
+              config={{ isPersonal: true }}
+              key="2"
+              currentyKey={currentKey}
             />
-          )}
-        </TabPane>
+          </TabPane>
+        )}
+        {authStatus.isAuthenticated && (
+          <TabPane
+            tab="From your hood"
+            key="3"
+          >
+            <TabContent
+              isAuthenticated={authStatus.isAuthenticated}
+              userId={authStatus.userId}
+              emptyMessage="Currently your neighbourhood is empty. Try again later once someone comes in."
+              config={{ isHood: true }}
+              key="3"
+              currentyKey={currentKey}
+            />
+          </TabPane>
+        )}
+        {authStatus.isAuthenticated && (
+          <TabPane
+            tab="History"
+            key="4"
+          >
+            <TabContent
+              isAuthenticated={authStatus.isAuthenticated}
+              userId={authStatus.userId}
+              emptyMessage="You have not rated any book yet."
+              config={{ isHistory: true }}
+              key="4"
+              currentyKey={currentKey}
+            />
+          </TabPane>
+        )}
+        {!authStatus.isAuthenticated && (
+          <TabPane style={{ display: 'flex', justifyContent: 'center' }} key="5">
+            <Typography.Text>Please login to get your recommendations</Typography.Text>
+          </TabPane>
+        )}
       </Tabs>
     </React.Fragment>
   );
 });
 
-export default Test;
+export default Home;

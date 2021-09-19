@@ -33,7 +33,7 @@ const Test = observer(() => {
       });
       authStatus.recentlyRegistered
        ? history.push('/affinities')
-       : history.push('/home');
+       : history.push('/');
     });
     // userInfo.update({
     //   accessGroup: 'regular',

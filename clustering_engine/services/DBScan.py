@@ -1,6 +1,5 @@
 import csv
 from sklearn.cluster import DBSCAN
-import sklearn.utils
 from sklearn.preprocessing import StandardScaler
 
 class DBScan:
