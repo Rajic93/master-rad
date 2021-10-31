@@ -84,13 +84,13 @@ const Book = ({ isAuthenticated, book, onRate, userId }) => {
   )
 }
 
-const TabContent = observer(({ enableSearch = false, isAuthenticated, userId, emptyMessage, config }) => {
+const TabContent = observer(({ clusterLabel, enableSearch = false, isAuthenticated, userId, emptyMessage, config, disablePagination }) => {
   const [books] = useState(new Books(config));
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [phrase, setPhrase] = useState('');
   const [limit, setLimit] = useState(10);
-
+console.log({ clusterLabel, userId })
   useEffect(() => {
     document.addEventListener('onLogout', () => {
       books.clear();
@@ -100,7 +100,7 @@ const TabContent = observer(({ enableSearch = false, isAuthenticated, userId, em
   useEffect(() => {
     setIsLoading(true);
     books
-    .load({ userId, pageSize: limit, page: offset, phrase })
+    .load({ userId, pageSize: limit, page: offset, phrase, clusterLabel })
     .then(() => setIsLoading(false))
     .catch(() => setIsLoading(false));
   }, [offset, limit, phrase]);
@@ -135,7 +135,7 @@ const TabContent = observer(({ enableSearch = false, isAuthenticated, userId, em
           {books.list.map((book) => <Book userId={userId} isAuthenticated={isAuthenticated} book={book} onRate={(id, rating) => books.rate(id, rating, userId)} />)}
         </Row>
       )}
-      {books.list && books.list.length > 0 && (
+      {!disablePagination && books.list && books.list.length > 0 && (
         <Pagination
           current={offset + 1} 
           total={books.count}
@@ -159,6 +159,7 @@ const TabContent = observer(({ enableSearch = false, isAuthenticated, userId, em
 const Home = observer(() => {
   const { authStatus } = useStores();
   const [currentKey, setCurrentKey] = useState('1');
+  console.log({ authStatus })
 
   return (
     <React.Fragment>
@@ -201,10 +202,12 @@ const Home = observer(() => {
             <TabContent
               isAuthenticated={authStatus.isAuthenticated}
               userId={authStatus.userId}
+              clusterLabel={authStatus.clusterLabel}
               emptyMessage="Currently your neighbourhood is empty. Try again later once someone comes in."
               config={{ isHood: true }}
               key="3"
               currentyKey={currentKey}
+              disablePagination
             />
           </TabPane>
         )}

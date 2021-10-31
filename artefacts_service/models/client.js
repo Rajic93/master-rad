@@ -1,13 +1,28 @@
 const Sequelize = require('sequelize');
+require('dotenv').config();
+
+
+const config = {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PWD,
+    schema: process.env.DB_SCHEMA,
+};
 
 const connect = () => {
-    const instance = new Sequelize('deq0ftt8uapr2p', 'fnkgdhsztkvzsj', '61ae98db23550c112620cfca8e02fc721471c412e44aa729a9eb6e1b15d203c1', {
-        host: 'ec2-54-74-156-137.eu-west-1.compute.amazonaws.com',
-        port: 5432,
-        dialect: 'postgres',
-        define: { freezeTableName: true },
-        native: true,
-    });
+    const instance = new Sequelize(
+        config.schema,
+        config.user,
+        config.password,
+        {
+            host: config.host,
+            port: config.port,
+            dialect: 'postgres',
+            define: { freezeTableName: true },
+            native: true,
+        },
+    );
 
     instance.authenticate()
         .then(() => console.log('Connection has been established successfully.'))

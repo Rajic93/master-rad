@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: users-service
+  template:
+    metadata:
+      labels:
+        app: users-service
+    spec:
+      containers:
+        - name: users-service
+          image: arajic/master_users_service
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 9000
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: dbHost
+                  name: users-service-secret
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: dbPort
+                  name: users-service-secret
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: dbUser
+                  name: users-service-secret
+            - name: DB_PWD
+              valueFrom:
+                secretKeyRef:
+                  key: dbPwd
+                  name: users-service-secret
+            - name: DB_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  key: dbSchema
+                  name: users-service-secret
+            - name: AUTH_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: authJwtSecret
+                  name: users-service-secret

@@ -35,9 +35,12 @@ router.put('/:id', async (req, res) => {
     res.status(200).send(updatedUser);
 });
 
-router.get('/cluster', (req,res) => {
-    console.log({ a: 'herere' });
-    res.status(200).send('success');
+router.get('/cluster/:id', async (req, res) => {
+    const { params: { id } } = req;
+    const neighbours = await User.findAll({ where: { cluster_label: id }, attributes: ['id'] });
+    const ids = neighbours.map(neighbour => neighbour.id);
+
+    res.status(200).send(ids);
 });
 
 router.get('/:id/similar', async (req,res) => {

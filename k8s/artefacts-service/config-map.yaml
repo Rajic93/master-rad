@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: artefacts-service-config-map
+data:
+  nnBaseUrl: http://d503-213-196-86-127.ngrok.io
+  usersServiceBaseUrl: http://users-service:9000
+  amqpTopicInvalidateQueueName: invalidate-cluster-cache
+  invalidateCacheMshType: invalidate-cache
+  cacheExpiryPolicy: "300"

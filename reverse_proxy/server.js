@@ -15,7 +15,7 @@ require('./src/models');
 
 const registerRoutes = require('./src/routes');
 
-const port = 5000;
+const port = 5099;
 
 registerRoutes(server);
 

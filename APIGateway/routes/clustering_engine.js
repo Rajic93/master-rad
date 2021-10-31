@@ -16,9 +16,16 @@ router.get(`/`, async (req, res) => {
             clusters,
         } = await http.get('/cluster');
 
-        res.send(clusters)
+        res.send(clusters);
+        res.send(error.toString())
+        if (req && req.systemStatus && req.systemStatus.clusteringEngine) {
+            req.systemStatus.clusteringEngine.status = 'Active';
+        }
     } catch (error) {
         res.send(error.toString())
+        if (req && req.systemStatus && req.systemStatus.clusteringEngine) {
+            req.systemStatus.clusteringEngine.status = 'Inactive';
+        }
     }
 });
 

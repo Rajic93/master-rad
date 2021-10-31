@@ -1,14 +1,14 @@
 const express = require('express');
 const Sequelize = require('sequelize');
-const { BookRating, Book, User } = require('../models');
-const { getClusterRecommendations, getSimilarRecommendations, getHistory } = require('../services');
+const { BookRating, Book } = require('../models');
+const { getArtefacts } = require('../services');
 
 const router = express.Router();
 
 
 router.get('/', async (req, res) => {
   const { query } = req;
-  const { userId, withSimilarities, phrase } = query || {}
+  const { userId, phrase, clusterLabel } = query || {}
 
   const offset = Math.max(Number.parseInt(query && query.page || 0, 10) - 1, 0) * Number.parseInt(query.pageSize || 10, 10);
 
@@ -31,25 +31,50 @@ router.get('/', async (req, res) => {
     ];
   }
 
-  const user = await User.findOne({ where: { id: userId } });
-
+  let params = [];
   if (query && query.isHistory) {
-    const history = await getHistory(userId, Number.parseInt(query.pageSize || 10, 10), offset)
-    return res.status(200).send(history);
+    params = [
+      'history',
+      userId,
+      [
+        userId,
+        Number.parseInt(query.pageSize || 10, 10),
+        offset,
+      ],
+    ]
   }
 
   if (query && query.isHood) {
-    const hoodRecommendations = await getClusterRecommendations({ hoodLimit: Number.parseInt(query && query.pageSize || 0, 10), hoodPage: Math.max(Number.parseInt(query && query.page || 0, 10) - 1, 0), clusterId: user.cluster_label });
-    return res.status(200).send(hoodRecommendations);
+    params = [
+      'hood',
+      clusterLabel,
+      [
+        clusterLabel,
+        Number.parseInt(query && query.pageSize || 0, 10),
+        Math.max(Number.parseInt(query && query.page || 0, 10) - 1, 0),
+      ],
+    ];
   }
   
   // 2. get all books similart to the 
   if (query && query.isPersonal) {
-    const yourRecommendations = await getSimilarRecommendations({ userLimit: Number.parseInt(query && query.pageSize || 0, 10), userPage:  Math.max(Number.parseInt(query && query.page || 0, 10) - 1, 0), userId, withSimilarities, bookQuery });
-    console.log({ yourRecommendations })
-    return res.status(200).send(yourRecommendations);
+    params = [
+      'personal',
+      userId,
+      [
+        userId,
+        Number.parseInt(query && query.pageSize || 0, 10),
+        Math.max(Number.parseInt(query && query.page || 0, 10) - 1, 0),
+        bookQuery
+      ]
+    ];
   }
 
+
+  if (params.length) {
+    const results = await getArtefacts(...params);
+    return res.status(200).send(results);
+  }
 
   const results = await Book.findAndCountAll({ where: bookQuery, offset, limit: Number.parseInt(query.pageSize || 10, 10) })
   return res.status(200).send(results);
@@ -59,28 +84,28 @@ router.get('/samples', async (req, res) => {
   // return 10 books from different genres
   const samples = [
     {
-      "id": 639882,
-      "title": "Frankenstein (Illustrated Classics Series)"
+      "id": 639844,
+      "title": "Four Blind Mice"
     },
     {
-      "id": 548218,
-      "title": "Classical Mythology"
+      "id": 639917,
+      "title": "White Teeth"
     },
     {
-      "id": 548221,
-      "title": "Flu: The Story of the Great Influenza Pandemic of 1918 and the Search for the Virus That Caused It"
+      "id": 637775,
+      "title": "Amsterdam"
     },
     {
-      "id": 548354,
-      "title": "Through Wolf's Eyes (Wolf)"
+      "id": 639862,
+      "title": "The Enchanted Wood"
     },
     {
-      "id": 548257,
-      "title": "To Kill a Mockingbird"
+      "id": 639933,
+      "title": "Red Dragon"
     },
     {
-      "id": 548266,
-      "title": "Getting Well Again"
+      "id": 643438,
+      "title": "Hannibal"
     },
     {
       "id": 548272,
@@ -91,9 +116,13 @@ router.get('/samples', async (req, res) => {
       "title": "Memoirs of a Geisha"
     },
     {
+      "id": 549609,
+      "title": "To Kill a Mockingbird"
+    },
+    {
       "id": 548424,
       "title": "Life of Pi"
-    }
+    },
   ]
   // const books = await Book.findAll({ limit: 10 });
   res.status(200).send(samples);

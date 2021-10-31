@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clustering-engine-deployment
+spec:
+  selector:
+    matchLabels:
+      app: clustering-engine
+  template:
+    metadata:
+      labels:
+        app: clustering-engine
+    spec:
+      containers:
+        - name: clustering-engine
+          image: arajic/master_clustering_engine
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5000

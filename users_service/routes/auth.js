@@ -2,6 +2,7 @@ const express = require('express');
 const { User, EmailTemplate } = require('../models');
 const { sign } = require('../utilities/jwt');
 const axios = require('axios');
+const Events = require('../services/Events');
 
 const router = express.Router();
 
@@ -27,18 +28,33 @@ router.post('/login', async (req, res) => {
     id: user.get('id'),
     status: user.get('status'),
     role: user.get('role'),
+    clusterLabel: user.get('cluster_label'),
   });
 
-  res.status(200).send({ token: jwtToken, id: user.get('id') });
+  res.status(200).send({
+    token: jwtToken,
+    id: user.get('id'),
+    clusterLabel: user.get('cluster_label'),
+  });
 })
 
 router.post('/register', async (req, res) => {
   try {
 
+    console.log({ body: req.body });
     const credentials = req.body;
 
     const user = await User.findOne({ where: { email: credentials.email }});
 
+   
+    const toClusterize = {
+      age: user.age,
+      lat: Number.parseFloat(user.lat),
+      lng: Number.parseFloat(user.lng),
+      id: user.id,
+    };
+    Events.produce(Events.TOPICS.USERS.FIND_TEMP_CLUSTER, toClusterize);
+    
     if (user) {
       return res.status(400).send('User already exists (Jok).');
     }
@@ -56,7 +72,9 @@ router.post('/register', async (req, res) => {
       // activation_token: token,
     };
 
+    console.log({toBeCreated})
     const created = await User.create(toBeCreated);
+    console.log(created)
 
     // TODO: add to clusterization queue
 
@@ -81,7 +99,9 @@ router.post('/register', async (req, res) => {
       payload.lng = lng;
     }
 
-    const name = `${created.get('first_name')} ${created.get('last_name')}`;
+    
+
+    Events.produce(Events.TOPICS.USERS.FIND_TEMP_CLUSTER, toClusterize);
     // const email = created.get('email');
     // const emailTemplate = await EmailTemplate.findOne({
     //   where: {

@@ -136,7 +136,7 @@ class Recommender:
         self.loadData(str(directory) + '/books.csv', book_id_to_title, title_to_book_id, 9)
         self.loadData(str(directory) + '/tags.csv', tag_id_to_name, name_to_tag_id, 1)
 
-        results = {};
+        results = {}
 
         # return titles
 

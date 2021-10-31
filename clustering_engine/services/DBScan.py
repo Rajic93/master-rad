@@ -114,7 +114,7 @@ class DBScan:
             normalized_clusters.append({
                 avg_age: avg_age,
                 center_lat: center_coors.lat,
-                enter_lng: center_coors.lng,
+                center_lng: center_coors.lng,
                 id: cluster.id,
                 users: cluster.users
             })
@@ -129,13 +129,13 @@ class DBScan:
         print(user)
 
         for cluster in clusters:
-            age_difference = cluster['avg_age'] - user.age
-            lat_difference = cluster['avg_lat'] - user.lat
-            lng_difference = cluster['avg_lng'] - user.lng
+            age_difference = cluster['avg_age'] - user['age']
+            lat_difference = cluster['avg_lat'] - user['lat']
+            lng_difference = cluster['avg_lng'] - user['lng']
 
             if age_difference < current_age_difference and lat_difference < current_lat_difference and lng_difference < current_lng_difference:
                 cluster_id = cluster['id']
-
+        print('temp cluster id', cluster_id)
         return cluster_id
 
     def calculate_center_coordinates(self, coordinates):

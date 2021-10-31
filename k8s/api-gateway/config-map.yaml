@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config-may
+data:
+  port: '9080'
+  baseUrlArtefacts: http://artefacts-service:9002
+  baseUrlUsers: http://users-service:9000
+  baseUrlClusterization: https://5cdc-178-17-27-128.ngrok.io

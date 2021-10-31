@@ -4,14 +4,14 @@ const { connect } = require('./client');
 
 const Book = require('./books');
 const BookRating = require('./books_rating');
-const User = require('./users');
+const AppsConfig = require('./apps_config');
 
 const db = connect();
 
 const models = {
     Book: Book.init(db, Sequelize.DataTypes),
     BookRating: BookRating.init(db, Sequelize.DataTypes),
-    User: User.init(db, Sequelize.DataTypes),
+    AppsConfig: AppsConfig.init(db, Sequelize.DataTypes),
 };
 
 Object.values(models)

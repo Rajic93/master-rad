@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artefacts-service-deployment
+spec:
+  selector:
+    matchLabels:
+      app: artefacts-service
+  template:
+    metadata:
+      labels:
+        app: artefacts-service
+    spec:
+      containers:
+        - name: artefacts-service
+          image: arajic/master_artefacts_service
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 9002
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: dbHost
+                  name: artefacts-service-secret
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  key: dbPort
+                  name: artefacts-service-secret
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  key: dbUser
+                  name: artefacts-service-secret
+            - name: DB_PWD
+              valueFrom:
+                secretKeyRef:
+                  key: dbPwd
+                  name: artefacts-service-secret
+            - name: DB_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  key: dbSchema
+                  name: artefacts-service-secret
+            - name: AUTH_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: authJwtSecret
+                  name: artefacts-service-secret
+            - name: NN_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: nnBaseUrl
+                  name: artefacts-service-config-map
+            - name: USERS_SERVICE_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: usersServiceBaseUrl
+                  name: artefacts-service-config-map
+            - name: AMQP_TOPICS_INVALIDATE_QUEUE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: amqpTopicInvalidateQueueName
+                  name: artefacts-service-config-map
+            - name: INVALIDATE_CAHCE_MSG_TYPE
+              valueFrom:
+                configMapKeyRef:
+                  key: invalidateCacheMshType
+                  name: artefacts-service-config-map
+            - name: CACHE_EXPITY_POLICY
+              valueFrom:
+                configMapKeyRef:
+                  key: cacheExpiryPolicy
+                  name: artefacts-service-config-map
+            - name: AMQP_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  key: amqpConnectionString
+                  name: artefacts-service-secret
+            - name: MEMCACHIER_SERVERS
+              valueFrom:
+                secretKeyRef:
+                  key: memCachierServers
+                  name: artefacts-service-secret
+            - name: MEMCACHIER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: memCachierUsername
+                  name: artefacts-service-secret
+            - name: MEMCACHIER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: memCachierPassword
+                  name: artefacts-service-secret
+      

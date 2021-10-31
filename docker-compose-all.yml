@@ -1,0 +1,81 @@
+version: '3'
+
+services:
+    api_gateway:
+        build: ./APIGateway
+        container_name: master_api_gateway
+        restart: unless-stopped
+        env_file: ./APIGateway/.env
+        environment: 
+            - BASE_URL_ARTEFACTS=http://artefacts_service:9002
+            - BASE_URL_USERS=http://users_service:9000
+            - BASE_URL_CLUSTERIZATION=http://clustering_engine:5000
+        ports:
+            - 9080:9080
+
+    artefacts_service:
+        build: ./artefacts_service
+        container_name: master_artefacts_service
+        restart: unless-stopped
+        env_file: ./artefacts_service/.env
+        ports:
+            - 9002:9002
+
+    users_service:
+        build: ./users_service
+        container_name: master_users_service
+        restart: unless-stopped
+        env_file: ./users_service/.env
+        ports:
+            - 9000:9000
+
+    neural_network:
+        build: ./python
+        scale: 1
+        restart: always
+        ports:
+            - 8000
+        volumes:
+            - ./db/models/books:/app/rec_api/models
+    nn_load_balancer:
+        image: nginx:latest
+        volumes:
+            - ./nn_load_balancer/nginx.config:/etc/nginx/nginx.conf:ro
+        depends_on:
+            - neural_network
+        ports:
+            - 5001:5001
+
+    clustering_engine:
+        build: ./clustering_engine
+        container_name: master_clustering_engine
+        restart: unless-stopped
+        ports:
+            - 5000:5000
+
+    db_master_users:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_USER: 'root'
+            MYSQL_PASSWORD: password
+            MYSQL_DATABASE: master_users
+            MYSQL_ROOT_PASSWORD: 'password'
+        ports:
+            - 13306:3306
+        volumes:
+            - ./db/users:/var/lib/mysql
+    db_master_artefacts:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_USER: 'root'
+            MYSQL_PASSWORD: password
+            MYSQL_DATABASE: master_users
+            MYSQL_ROOT_PASSWORD: 'password'
+        ports:
+            - 13306:3306
+        volumes:
+            - ./db/users:/var/lib/mysql

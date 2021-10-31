@@ -1,0 +1,76 @@
+doctype html
+html
+  head
+    title= title
+    style(type='text/css').
+        .fl-1 {
+            display: flex;
+            flex: 1;
+        }
+
+        .fl-row {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 10px;
+        }
+
+        .fl-centered {
+            display: flex;
+            justify-content: start;
+        }
+
+        .icon-holder {
+            display: flex;
+            margin-top: 2vh;
+            margin-bottom: 20px;
+        }
+
+        .icon-holder div svg {
+            width: 100%;
+            max-width: 200px;
+            height: auto;
+        }
+
+        span {
+            font-size: 17px;
+            text-align: center;
+        }
+
+        h2 {
+            font-weight: normal;
+            text-align: start;
+        }
+
+        @media (max-width: 425px) {
+            span {
+                font-size: 17px;
+            }
+
+            .icon-holder {
+                display: flex;
+                margin-top: 10vh;
+                margin-bottom: 0px;
+            }
+        }
+  body
+    div(class='icon-holder')
+        div(class='fl-1')
+        div(class='fl-1 fl-centered')
+        div(class='fl-1')
+    div(class='fl-row')
+        h2 System status
+        div(class='fl-centered')
+            span= clusteringEngineName
+            span &nbsp;=>&nbsp;
+            span= clusteringEngineStatus
+    div(class='fl-row')
+        div(class='fl-centered')
+            span= artefactsServiceName
+            span &nbsp;=>&nbsp;
+            span= artefactsServiceStatus
+    div(class='fl-row')
+        div(class='fl-centered')
+            span= usersServiceName
+            span &nbsp;=>&nbsp;
+            span= usersServiceStatus

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-database-deployment
+  labels:
+    app: users-database
+spec:
+  selector:
+    matchLabels:
+      app: users-database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: users-database
+    spec:
+      containers:
+        - name: users-database
+          image: mysql
+          resources:
+            limits:
+              memory: "1028Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3306
+              name: udd-port
+          env:
+            - name: MYSQL_USER
+              value: mysql
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MYSQL_DATABASE
+              value: master_users
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+          volumeMounts:
+            - name: users-database-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: users-database-storage
+          persistentVolumeClaim:
+            claimName: users-database-persistent-volume-claim

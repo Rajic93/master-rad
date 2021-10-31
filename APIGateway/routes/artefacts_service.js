@@ -9,9 +9,15 @@ router.get(`/`, async (req, res) => {
     try {
         const response = await http.get('/books', { params: req.query })
         res.status(200).send(response.data);
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Active';
+        }
     } 
     catch (error) {
         res.send(error.toString())
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Inactive';
+        }
     }
 });
 
@@ -20,9 +26,14 @@ router.get(`/samples`, async (req, res) => {
 
         const response = await http.get('/books/samples');
         res.status(200).send(response.data)
-
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Active';
+        }
     } catch (error) {
         res.send(error.toString())
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Inactive';
+        }
     }
 });
 
@@ -31,9 +42,14 @@ router.post(`/`, async (req, res) => {
 
         const response = await http.post('/books', req.body);
         res.status(200).send(response.data)
-
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Active';
+        }
     } catch (error) {
         res.send(error.toString())
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Inactive';
+        }
     }
 });
 
@@ -42,9 +58,14 @@ router.post(`/bulk-rate`, async (req, res) => {
 
         const response = await http.post('/books/bulk-rate', req.body);
         res.status(200).send(response.data)
-
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Active';
+        }
     } catch (error) {
         res.send(error.toString())
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Inactive';
+        }
     }
 });
 
@@ -53,9 +74,14 @@ router.post(`/rate`, async (req, res) => {
 
         const response = await http.post('/books/rate', req.body);
         res.status(200).send(response.data)
-
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Active';
+        }
     } catch (error) {
         res.send(error.toString())
+        if (req && req.systemStatus && req.systemStatus.artefactsService) {
+            req.systemStatus.artefactsService.status = 'Inactive';
+        }
     }
 });
 

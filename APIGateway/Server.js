@@ -13,6 +13,9 @@ app.use(cors());
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 
+app.set('views', './public');
+app.set('view engine', 'pug');
+
 router(app)
 
 app.listen(port, () => {

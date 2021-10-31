@@ -6,7 +6,6 @@ COPY . .
 
 RUN apk --no-cache add --virtual native-deps \
   git g++ gcc libgcc libstdc++ linux-headers make python3 postgresql-dev && \
-  npm install node-gyp -g &&\
   npm install -g nodemon &&\
   npm install
 

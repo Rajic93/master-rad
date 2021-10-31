@@ -1,16 +1,66 @@
 const sequelize = require('sequelize');
+const https = require('https');
 const _ = require('lodash');
 const axios = require('axios');
-const { BookRating, Book, User } = require('../models');
+const { BookRating, Book, AppsConfig } = require('../models');
+const cache = require('./cache');
+const { getAllNeighbours } = require('./neighbours');
+const { consume } = require('./Events');
+
+const agent = new https.Agent({ rejectUnauthorized: false })
+
+const getCachedResults = async (query) => {
+  const tag = `${query.type}-${query.id}-${query.additional}`;
+  const rawResults = await cache.get(tag);
+  console.log({ tag })
+  return JSON.parse(rawResults);
+}
+
+const processResults = async (artefacts, query) => {
+  if (!query) {
+    return artefacts;
+  }
+  // prepare cache
+  const tag = `${query.type}-${query.id}-${query.additional}`;
+  const content = JSON.stringify(artefacts);
+  // save cache
+  const expiryPolicy = await cache.set(tag, content);
+  console.log('Expires in', expiryPolicy);
+
+  return artefacts;
+};
 
 const handlePromise = async (fn = e => e) => {
     try {
       const res = await fn();
       return res;
     } catch (error) {
+      console.log({ error })
       return null
     }
 }
+
+const getArtefacts = async (type, id, queryParams) => {
+  const additional = queryParams ? [...queryParams] : [];
+  const cacheQuery = { type, id, additional: additional.join(',') };
+  const cached = await getCachedResults(cacheQuery);
+  if (cached) {
+    return cached;
+  }
+
+  let results = {};
+  if (type === 'history') {
+    results = await getHistory(...queryParams);
+  }
+  if (type === 'hood') {
+    results = await getClusterRecommendations(...queryParams);
+  }
+  if (type === 'personal') {
+    results = await getSimilarRecommendations(...queryParams);
+  }
+
+  return processResults(results, cacheQuery);
+};
 
 const getHistory = async (userId, limit, offset) => {
   const ratings = await BookRating.findAll({ where: { user_id: Number.parseInt(userId, 10) }, attributes: ['book_id', 'rating'] });
@@ -39,39 +89,34 @@ const getHistory = async (userId, limit, offset) => {
   return books;
 }
 
-const getClusterRecommendations = async ({ hoodLimit = 10, hoodPage = 0, clusterId }) => {
+const getClusterRecommendations = async (clusterId, hoodLimit = 10, hoodPage = 0) => {
     let recommendations = { count: 0, rows: [] };
     if (clusterId) {
-      const where = { cluster_label: clusterId };
-      const neighbours = await User.findAll({ where, attributes: ['id'] });
-      const ids = neighbours.map(neighbour => neighbour.id);
+      const neighbours = await getAllNeighbours(clusterId);
 
-      const neightboursBooks = await Book.findAndCountAll({
+      recommendations = await Book.findAndCountAll({
         include: [
           {
             model: BookRating,
             as: 'bookToBookRating',
+            attributes: ['rating', 'user_id'],
             where: {
-              user_id: { [sequelize.Op.in]: ids },
+              user_id: { [sequelize.Op.in]: neighbours },
               rating: { [sequelize.Op.gte]: 6 }
             },
           }
         ],
       });
-
-      let start = Number.parseInt(hoodPage, 10) * Number.parseInt(hoodLimit, 10);
-      let end = start + Number.parseInt(hoodLimit, 10);
-      const pagginatedHood = _.slice(neightboursBooks.rows, start, end);
-      recommendations = {
-        count: neightboursBooks.count,
-        rows: pagginatedHood,
-      }
+      console.log({ recommendations })
     }
 
     return recommendations;
 };
 
-const getSimilarRecommendations = async ({ userLimit = 10, userPage = 0, userId, withSimilarities }) => {
+const getSimilarRecommendations = async (userId, userLimit = 10, userPage = 0) => {
+    const nnConfig = await AppsConfig.findOne({ where: { application: 'artefacts_service', key: 'nn_base_url' } }); 
+    const nnBaseUrl = nnConfig.dataValues.value;
+    console.log({ nnBaseUrl })
     let recommendations = { count: 0, rows: [] };
     if (userId) {
         const likedBooks = await Book.findAndCountAll({
@@ -96,61 +141,46 @@ const getSimilarRecommendations = async ({ userLimit = 10, userPage = 0, userId,
         // TODO: add cache here
     
         const promises = titles.map((title) => handlePromise(() => axios.get(
-          'http://localhost:5000/recommend',
-          { params: { title  } },
+          `${nnBaseUrl}/recommend`,
+          {
+            params: { title  },
+            httpsAgent: agent,
+          },
         )));
     
         const rawResults = await Promise.all(promises);
-        console.log({ rawResults })
-        const results = rawResults.filter(e => e).map(({ data }) => data).filter(e => e).reduce((acc, curr) => {
-          if (!curr[0] || !curr[0][0]) {
-            return acc;
-          }
-          if (withSimilarities) {
-            acc[curr[0][0]] = curr.slice(1);
-          } else {
-            acc[curr[0][0]] = curr.slice(1).map(b => b[0]);
-          }
-          return acc;
-        }, {});
-        
-        if (withSimilarities) {
-            recommendations = {
-            count: likedBooks.count,
-            rows: results,
-          };
-        } else {
-          let finalRes = results;
-          let raw = []
-          const promissesBooks = Object.values(results).map(titles => Book.findAll({ where: { title: { [sequelize.Op.in]: titles } } }));
-          try {
-            const res = await Promise.all(promissesBooks);
-            
-            finalRes = res.reduce((acc, vals, index) => {
-              const title = Object.keys(results)[index];
-              acc.push({
-                ...vals,
-                title,
-              });
-              return acc;
-            }, []);
-            raw = _.union(...res);
-          } catch (e) {
-    
-          }
-    
-          recommendations = {
-            count: raw.length,
-            raw,
-            rows: finalRes,
-          };
+        const results = rawResults.map((r) => r && r.data).filter(e => e).reduce((acc, curr) => {
+          const resAcc = [
+            ...acc,
+            ...curr.filter(([title]) => !titles.find((t) => _.toLower(t) === _.toLower(title))),
+          ];
+          return resAcc;
+        }, []);
+        const mapBook = {};
+        for (const result of results) {
+          mapBook[result[0]] = { similarity: result[1] };
         }
+        console.log({ mapBook })
+        const books = await Book.findAll({ where: { title: Object.keys(mapBook) } });
+
+        recommendations.count = results.length;
+        recommendations.rows = _.map(_.filter(_.map(books, b=> b.dataValues), b => b), (b) => ({
+          ...b,
+          similarity: mapBook[b.title].similarity,
+        }));
     }
     return recommendations;
 }
-
-module.exports = {
-    getClusterRecommendations,
-    getSimilarRecommendations,
-    getHistory,
+const handleInvalidateCache = async (data) => {
+  console.log(data)
+  if (data.type === 'invalidate-cache') {
+    cache.invalidate();
+  }
 }
+
+const setupListeningServices = () => {
+  console.log('Setting up listeners')
+  consume(handleInvalidateCache)
+};
+
+module.exports = {  getArtefacts, setupListeningServices }

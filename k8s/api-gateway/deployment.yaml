@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: arajic/master_api_gateway
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 9080
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-config-may
+                  key: port
+            - name: BASE_URL_ARTEFACTS
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-config-may
+                  key: baseUrlArtefacts
+            - name: BASE_URL_USERS
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-config-may
+                  key: baseUrlUsers
+            - name: BASE_URL_CLUSTERIZATION
+              valueFrom:
+                configMapKeyRef:
+                  name: api-gateway-config-may
+                  key: baseUrlClusterization
+
+

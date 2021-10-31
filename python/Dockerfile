@@ -31,6 +31,8 @@ RUN python3 -m pip install \
 
 RUN pip3 install psycopg2-binary
 
+RUN pip3 install tensorflowjs
+
 # install your app
 
 COPY . /app/

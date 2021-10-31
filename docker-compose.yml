@@ -31,12 +31,20 @@ services:
 
     neural_network:
         build: ./python
-        container_name: master_neural_network
+        scale: 1
         restart: always
         ports:
-            - 5001:8000
-        networks: 
-            - masternet
+            - 8000
+        volumes:
+            - ./db/models/books:/app/rec_api/models
+    nn_load_balancer:
+        image: nginx:latest
+        volumes:
+            - ./nn_load_balancer/nginx.config:/etc/nginx/nginx.conf:ro
+        depends_on:
+            - neural_network
+        ports:
+            - 5001:5001
 
     clustering_engine:
         build: ./clustering_engine
@@ -44,6 +52,3 @@ services:
         restart: unless-stopped
         ports:
             - 5000:5000
-
-networks: 
-    masternet:
