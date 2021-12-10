@@ -46,10 +46,15 @@ const Test = observer(() => {
   const history = useHistory();
   const { authStatus } = useStores();
 
-  const onFinish = (values: any) => form.submit().then(() => {
-    authStatus.setRecentlyRegistered(true);
-    history.push('/login');
-  });
+  const onFinish = (values: any) => {
+    form.submit().then(() => {
+      authStatus.setRecentlyRegistered(true);
+      
+    })
+    setTimeout(() => {
+      history.push('/login');
+    }, 500)
+  };
 
   const onChangeHandler = (field, value) => form.setField(field, value)
 

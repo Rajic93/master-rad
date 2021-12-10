@@ -89,7 +89,7 @@ const TabContent = observer(({ clusterLabel, enableSearch = false, isAuthenticat
   const [offset, setOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [phrase, setPhrase] = useState('');
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(100);
 console.log({ clusterLabel, userId })
   useEffect(() => {
     document.addEventListener('onLogout', () => {

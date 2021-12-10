@@ -27,3 +27,20 @@ The rest two apps must be started manually.
 - Postgres: `5003`
 - Clustering engine: `5000`
 - React app: `8080`
+
+
+Sistem
+
+NN - mora da bude pod dokerom i da ima proxy na nju zbog local hosta
+ - iz klastera se proxy gadja preko ngrok-a
+clustering engine ide u klaster
+
+Koraci
+1. Podici ngrok na 5099
+    1. azurirati u bazi ngrok url da bi servisi iz minikube mogli da pogode ostatak sistema
+2. podici reverse proxy sa npm run dev
+3. podici nn_load_balancer sa docker compose
+    1. njemu je dependency neural_network tako da ce sam da podigne def broj replika
+4. podici minikube service api-gateway-service
+5. azurirati base url sa portom iz prethodnog koraka na frot app
+6. podici front
